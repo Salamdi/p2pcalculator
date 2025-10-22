@@ -1,0 +1,224 @@
+import { useQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
+import cn from 'classnames';
+
+export const Route = createFileRoute('/rates/')({
+  component: RouteComponent,
+})
+
+const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
+const sellBody = '{"fiat":"KZT","page":1,"rows":10,"tradeType":"BUY","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["KaspiBank"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
+const buyBody = '{"fiat":"MAD","page":1,"rows":10,"tradeType":"SELL","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["AttijariwafaNational"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
+const googleFinUrl = '/finance/quote/KZT-MAD'
+const googleRateRegex = /data-last-price="([\d.]+)"/g
+const multFactor = 100
+const tradeAmount = 5000
+function RouteComponent() {
+  const [selectedSellAdv, setSelectedSellAdv] = useState('');
+  const { data: sellData } = useQuery<{
+    adv: {
+      payTimeLimit: number;
+      price: number;
+      fiatSymbol: string;
+      fiatUnit: string;
+      asset: string;
+      tradableQuantity: number;
+      minSingleTransAmount: number
+      maxSingleTransAmount: number
+      commissionRate: number;
+      tradeType: string;
+      advNo: string;
+    },
+    advertiser: {
+      nickName: string;
+      monthOrderCount: number;
+      monthFinishRate: number;
+      positiveRate: number;
+    },
+  }[]>({
+    queryKey: ['binance-kzt'],
+    queryFn: () => fetch(p2purl, {
+      method: 'POST',
+      body: sellBody,
+      headers: {
+        "content-type": "application/json",
+      },
+    }).then((res) => res.json())
+      .then((json) => json.data),
+    initialData: [],
+    select: (data) => {
+      return data;
+    },
+  })
+
+  const [selectedBuyAdv, setSelectedBuyAdv] = useState("")
+  const { data: buyData } = useQuery<{
+    adv: {
+      payTimeLimit: number;
+      price: number;
+      fiatSymbol: string;
+      fiatUnit: string;
+      asset: string;
+      tradableQuantity: number;
+      minSingleTransAmount: number
+      maxSingleTransAmount: number
+      commissionRate: number;
+      tradeType: string;
+      advNo: string;
+    },
+    advertiser: {
+      nickName: string;
+      monthOrderCount: number;
+      monthFinishRate: number;
+      positiveRate: number;
+    },
+  }[]>({
+    queryKey: ['binance-mad'],
+    queryFn: () => fetch(p2purl, {
+      method: 'POST',
+      body: buyBody,
+      headers: {
+        "content-type": "application/json",
+      },
+    }).then((res) => res.json())
+      .then((json) => json.data),
+    initialData: [],
+    select: (data) => {
+      return data;
+    },
+  })
+
+  const { data: googleRate } = useQuery<number>({
+    queryKey: ['google-fin'],
+    queryFn: () => fetch(googleFinUrl, {
+      method: 'GET',
+    }).then((res) => res.text())
+      .then((html) => {
+        const execResult = googleRateRegex.exec(html);
+        const rate = execResult?.at(1);
+        return rate === undefined ? Infinity : parseFloat(rate) * multFactor
+      }),
+    initialData: Infinity,
+  })
+
+  const binRate = useMemo(() => {
+    if (!selectedBuyAdv || !selectedSellAdv) {
+      return Infinity
+    }
+
+    const buyAdv = buyData.find((item) => item.adv.advNo === selectedBuyAdv)
+    const sellAdv = sellData.find((item) => item.adv.advNo === selectedSellAdv)
+    const rate = (buyAdv!.adv.price / sellAdv!.adv.price) * multFactor
+
+    return rate
+  }, [selectedBuyAdv, selectedSellAdv, buyData, sellData])
+
+  const absDiff = useMemo(() => {
+    return binRate - googleRate
+  }, [binRate, googleRate])
+
+  const relDiff = useMemo(() => {
+    return (absDiff / binRate)
+  }, [binRate, absDiff])
+
+  const gain = useMemo(() => {
+    return relDiff * tradeAmount
+  }, [relDiff])
+
+  return <div className="lg:flex">
+    <ul className="h-[35dvh] mb-4 overflow-y-scroll lg:flex-1 lg:h-[35dvh]">
+      {sellData.map((advItem) => (
+        <li
+          key={advItem.adv.advNo}
+          className={
+            cn(
+              'flex justify-between py-1 px-4 items-center',
+              { 'bg-blue-200': selectedSellAdv === advItem.adv.advNo },
+            )
+          }
+        >
+          <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
+          <button
+            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
+            onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
+          >Select</button>
+        </li>
+      ))}
+    </ul>
+    <ul className="h-[35dvh] overflow-y-scroll lg:flex-1 lg:h-[35dvh]">
+      {buyData.map((advItem) => (
+        <li
+          key={advItem.adv.advNo}
+          className={
+            cn(
+              'flex justify-between py-1 px-4 items-center',
+              { 'bg-green-200': selectedBuyAdv === advItem.adv.advNo },
+            )
+          }
+        >
+          <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
+          <button
+            className="bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
+            onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
+          >Select</button>
+        </li>
+      ))}
+    </ul>
+    <div className="flex justify-center mt-2">
+      <table className="table-auto text-sm">
+        <thead>
+          <tr>
+            <th className="border p-1">
+              <pre>Bin MAD/KZT</pre>
+            </th>
+            <th className="border p-1">
+              <pre>
+                Goo MAD/KZT
+              </pre>
+            </th>
+            <th className="border p-1">
+              <pre>Abs diff</pre>
+            </th>
+            <th className="border p-1">
+              <pre>Rel diff</pre>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="border p-1">
+              <pre>
+                {binRate === Infinity ? 'N/A' : binRate.toFixed(4)}
+              </pre>
+            </td>
+            <td className="border p-1">
+              {googleRate === Infinity ? 'N/A' : googleRate.toFixed(4)}
+            </td>
+            <td className="border p-1">
+              {absDiff === Infinity ? 'N/A' : absDiff.toFixed(3)}
+            </td>
+            <td
+              className={cn("border p-1", {
+                'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
+                'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
+              })}>
+              {isNaN(relDiff) ? 'N/A' : (relDiff * 100).toFixed(3)}
+            </td>
+          </tr>
+          <tr>
+            <td
+              colSpan={4}
+              className={cn("border p-1", {
+                'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
+                'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
+              })}
+            >
+              {isNaN(relDiff) || relDiff === Infinity ? 'N/A' : gain.toFixed(2)}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
