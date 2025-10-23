@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/bapi/:path*",
+      "destination": "https://p2p.binance.com/bapi/:path*"
+    },
+    {
+      "source": "/finance/:path*",
+      "destination": "https://google.com/finance/:path*"
+    }
+  ]
+}
