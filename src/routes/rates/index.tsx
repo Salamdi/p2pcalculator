@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import cn from 'classnames';
 
 export const Route = createFileRoute('/rates/')({
-  component: RouteComponent,
+  component: RateComponent,
 })
 
 const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
@@ -14,7 +14,7 @@ const googleFinUrl = '/finance/quote/KZT-MAD'
 const googleRateRegex = /data-last-price="([\d.]+)"/g
 const multFactor = 100
 const tradeAmount = 5000
-function RouteComponent() {
+export function RateComponent() {
   const [selectedSellAdv, setSelectedSellAdv] = useState('');
   const { data: sellData } = useQuery<{
     adv: {
@@ -126,7 +126,7 @@ function RouteComponent() {
     return relDiff * tradeAmount
   }, [relDiff])
 
-  return <div className="lg:flex">
+  return <div className="lg:flex text-sm">
     <ul className="h-[35dvh] mb-4 overflow-y-scroll lg:flex-1 lg:h-[35dvh]">
       {sellData.map((advItem) => (
         <li
