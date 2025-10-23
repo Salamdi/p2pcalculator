@@ -104,9 +104,14 @@ export function RateComponent() {
 
     const buyAdv = buyData.find((item) => item.adv.advNo === selectedBuyAdv)
     const sellAdv = sellData.find((item) => item.adv.advNo === selectedSellAdv)
-    const rate = (buyAdv!.adv.price / sellAdv!.adv.price) * multFactor
+    const buyPrice = buyAdv?.adv.price
+    const sellPrice = sellAdv?.adv.price
 
-    return rate
+    if (!buyPrice || !sellPrice) {
+      return Infinity
+    }
+
+    return buyPrice / sellPrice;
   }, [selectedBuyAdv, selectedSellAdv, buyData, sellData])
 
   const absDiff = useMemo(() => {
