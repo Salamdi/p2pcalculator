@@ -125,45 +125,49 @@ export function RateComponent() {
     return relDiff * tradeAmount
   }, [relDiff])
 
-  return <div className="lg:flex text-sm">
-    <ul className="h-[35dvh] mb-4 overflow-y-scroll lg:flex-1 lg:h-[35dvh]">
-      {sellData.map((advItem) => (
-        <li
-          key={advItem.adv.advNo}
-          className={
-            cn(
-              'flex justify-between py-1 px-4 items-center',
-              { 'bg-blue-200': selectedSellAdv === advItem.adv.advNo },
-            )
-          }
-        >
-          <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
-          <button
-            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-            onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
-          >Select</button>
-        </li>
-      ))}
-    </ul>
-    <ul className="h-[35dvh] overflow-y-scroll lg:flex-1 lg:h-[35dvh]">
-      {buyData.map((advItem) => (
-        <li
-          key={advItem.adv.advNo}
-          className={
-            cn(
-              'flex justify-between py-1 px-4 items-center',
-              { 'bg-green-200': selectedBuyAdv === advItem.adv.advNo },
-            )
-          }
-        >
-          <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
-          <button
-            className="bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-            onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
-          >Select</button>
-        </li>
-      ))}
-    </ul>
+  return <div>
+    <div className="text-sm lg:flex xl:w-2/3 mx-auto">
+      <ul className="h-[35dvh] mb-4 overflow-y-scroll lg:flex-1 border-2 border-blue-500 m-4 rounded-lg">
+        <p className="text-center"><strong>Buy</strong></p>
+        {sellData.map((advItem) => (
+          <li
+            key={advItem.adv.advNo}
+            className={
+              cn(
+                'flex justify-between py-1 px-4 items-center',
+                { 'bg-blue-200': selectedSellAdv === advItem.adv.advNo },
+              )
+            }
+          >
+            <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
+              onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
+            >Select</button>
+          </li>
+        ))}
+      </ul>
+      <ul className="h-[35dvh] overflow-y-scroll lg:flex-1 border-2 border-green-500 m-4 rounded-lg">
+        <p className="text-center"><strong>Sell</strong></p>
+        {buyData.map((advItem) => (
+          <li
+            key={advItem.adv.advNo}
+            className={
+              cn(
+                'flex justify-between py-1 px-4 items-center',
+                { 'bg-green-200': selectedBuyAdv === advItem.adv.advNo },
+              )
+            }
+          >
+            <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
+            <button
+              className="bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
+              onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
+            >Select</button>
+          </li>
+        ))}
+      </ul>
+    </div>
     <div className="flex justify-center mt-2">
       <table className="table-auto text-sm">
         <thead>
@@ -202,7 +206,7 @@ export function RateComponent() {
                 'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
                 'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}>
-              {googleRate.rate === -1 || isNaN(relDiff) ? 'N/A' : (relDiff * 100).toFixed(3)}
+              {googleRate.rate === -1 || isNaN(relDiff) ? 'N/A' : `${(relDiff * 100).toFixed(3)}%`}
             </td>
           </tr>
           <tr>
