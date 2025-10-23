@@ -203,7 +203,7 @@ export function RateComponent() {
                 'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
                 'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}>
-              {googleRate.rate === -1 ? 'N/A' : (relDiff * 100).toFixed(3)}
+              {googleRate.rate === -1 || isNaN(relDiff) ? 'N/A' : (relDiff * 100).toFixed(3)}
             </td>
           </tr>
           <tr>
@@ -214,7 +214,7 @@ export function RateComponent() {
                 'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {googleRate.rate === -1 ? 'N/A' : gain.toFixed(2)}
+              {googleRate.rate === -1 || isNaN(gain) ? 'N/A' : gain.toFixed(2)}
             </td>
           </tr>
         </tbody>
