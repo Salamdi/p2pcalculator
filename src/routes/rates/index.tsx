@@ -10,8 +10,7 @@ export const Route = createFileRoute('/rates/')({
 const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
 const sellBody = '{"fiat":"KZT","page":1,"rows":10,"tradeType":"BUY","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["KaspiBank"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
 const buyBody = '{"fiat":"MAD","page":1,"rows":10,"tradeType":"SELL","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["AttijariwafaNational"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
-const googleFinUrl = '/finance/quote/KZT-MAD'
-const googleRateRegex = /data-last-price="([\d.]+)"/g
+const googleFinUrl = '/rates/KZT-MAD'
 const multFactor = 100
 const tradeAmount = 5000
 export function RateComponent() {
@@ -89,17 +88,12 @@ export function RateComponent() {
     },
   })
 
-  const { data: googleRate } = useQuery<number>({
+  const { data: googleRate } = useQuery<{ rate: number }>({
     queryKey: ['google-fin'],
     queryFn: () => fetch(googleFinUrl, {
       method: 'GET',
-    }).then((res) => res.text())
-      .then((html) => {
-        const execResult = googleRateRegex.exec(html);
-        const rate = execResult?.at(1);
-        return rate === undefined ? Infinity : parseFloat(rate) * multFactor
-      }),
-    initialData: Infinity,
+    }).then((res) => res.json()),
+    initialData: { rate: -1 },
   })
 
   const binRate = useMemo(() => {
@@ -115,7 +109,7 @@ export function RateComponent() {
   }, [selectedBuyAdv, selectedSellAdv, buyData, sellData])
 
   const absDiff = useMemo(() => {
-    return binRate - googleRate
+    return binRate - googleRate.rate
   }, [binRate, googleRate])
 
   const relDiff = useMemo(() => {
@@ -193,7 +187,7 @@ export function RateComponent() {
               </pre>
             </td>
             <td className="border p-1">
-              {googleRate === Infinity ? 'N/A' : googleRate.toFixed(4)}
+              {googleRate.rate === -1 ? 'N/A' : googleRate.rate.toFixed(4)}
             </td>
             <td className="border p-1">
               {absDiff === Infinity ? 'N/A' : absDiff.toFixed(3)}
@@ -203,7 +197,7 @@ export function RateComponent() {
                 'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
                 'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}>
-              {isNaN(relDiff) ? 'N/A' : (relDiff * 100).toFixed(3)}
+              {googleRate.rate === -1 ? 'N/A' : (relDiff * 100).toFixed(3)}
             </td>
           </tr>
           <tr>
@@ -214,7 +208,7 @@ export function RateComponent() {
                 'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {isNaN(relDiff) || relDiff === Infinity ? 'N/A' : gain.toFixed(2)}
+              {googleRate.rate === -1 ? 'N/A' : gain.toFixed(2)}
             </td>
           </tr>
         </tbody>

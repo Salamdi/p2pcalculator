@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RatesIndexRouteImport } from './routes/rates/index'
+import { Route as RatesPairRouteImport } from './routes/rates/$pair'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
 const RatesIndexRoute = RatesIndexRouteImport.update({
   id: '/rates/',
   path: '/rates/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RatesPairRoute = RatesPairRouteImport.update({
+  id: '/rates/$pair',
+  path: '/rates/$pair',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -80,6 +86,7 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/rates/$pair': typeof RatesPairRoute
   '/rates': typeof RatesIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/rates/$pair': typeof RatesPairRoute
   '/rates': typeof RatesIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/rates/$pair': typeof RatesPairRoute
   '/rates/': typeof RatesIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/demo/tanstack-query'
+    | '/rates/$pair'
     | '/rates'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/demo/tanstack-query'
+    | '/rates/$pair'
     | '/rates'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/demo/tanstack-query'
+    | '/rates/$pair'
     | '/rates/'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -162,6 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  RatesPairRoute: typeof RatesPairRoute
   RatesIndexRoute: typeof RatesIndexRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/rates'
       fullPath: '/rates'
       preLoaderRoute: typeof RatesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rates/$pair': {
+      id: '/rates/$pair'
+      path: '/rates/$pair'
+      fullPath: '/rates/$pair'
+      preLoaderRoute: typeof RatesPairRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -258,6 +278,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  RatesPairRoute: RatesPairRoute,
   RatesIndexRoute: RatesIndexRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoApiTqTodosRoute: DemoApiTqTodosRoute,
