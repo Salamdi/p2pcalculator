@@ -94,6 +94,7 @@ export function RateComponent() {
       method: 'GET',
     }).then((res) => res.json()),
     initialData: { rate: -1 },
+    select: ({ rate }) => ({ rate: rate * multFactor }),
   })
 
   const binRate = useMemo(() => {
