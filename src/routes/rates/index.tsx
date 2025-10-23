@@ -11,7 +11,6 @@ const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
 const sellBody = '{"fiat":"KZT","page":1,"rows":10,"tradeType":"BUY","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["KaspiBank"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
 const buyBody = '{"fiat":"MAD","page":1,"rows":10,"tradeType":"SELL","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["AttijariwafaNational"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
 const googleFinUrl = '/rates/KZT-MAD'
-const multFactor = 100
 const tradeAmount = 5000
 export function RateComponent() {
   const [selectedSellAdv, setSelectedSellAdv] = useState('');
@@ -94,7 +93,7 @@ export function RateComponent() {
       method: 'GET',
     }).then((res) => res.json()),
     initialData: { rate: -1 },
-    select: ({ rate }) => ({ rate: rate * multFactor }),
+    select: ({ rate }) => ({ rate: rate }),
   })
 
   const binRate = useMemo(() => {
