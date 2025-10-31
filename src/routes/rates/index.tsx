@@ -127,17 +127,21 @@ export function RateComponent() {
 
   return <div>
     <div className="text-sm lg:flex xl:w-2/3 mx-auto">
-      <ul className="h-[35dvh] mb-4 overflow-y-scroll lg:flex-1 border-2 border-blue-500 m-4 rounded-lg">
-        <p className="text-center"><strong>Buy</strong></p>
+      <ul className="h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 border-2 border-blue-500 m-4 rounded-lg">
+        <p className="text-center sticky top-0 bg-blue-200 p-1"><strong>Buy</strong></p>
         {sellData.map((advItem) => (
           <li
             key={advItem.adv.advNo}
             className={
               cn(
-                'flex justify-between py-1 px-4 items-center',
-                { 'bg-blue-200': selectedSellAdv === advItem.adv.advNo },
+                'flex justify-between py-1 px-4 items-center cursor-pointer',
+                {
+                  'bg-blue-300': selectedSellAdv === advItem.adv.advNo,
+                  'hover:bg-blue-100': selectedSellAdv !== advItem.adv.advNo,
+                },
               )
             }
+            onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
           >
             <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
             <button
@@ -147,17 +151,21 @@ export function RateComponent() {
           </li>
         ))}
       </ul>
-      <ul className="h-[35dvh] overflow-y-scroll lg:flex-1 border-2 border-green-500 m-4 rounded-lg">
-        <p className="text-center"><strong>Sell</strong></p>
+      <ul className="h-[38dvh] overflow-y-scroll lg:flex-1 border-2 border-green-500 m-4 rounded-lg">
+        <p className="text-center sticky top-0 bg-green-200 p-1"><strong>Sell</strong></p>
         {buyData.map((advItem) => (
           <li
             key={advItem.adv.advNo}
             className={
               cn(
-                'flex justify-between py-1 px-4 items-center',
-                { 'bg-green-200': selectedBuyAdv === advItem.adv.advNo },
+                'flex justify-between py-1 px-4 items-center cursor-pointer',
+                {
+                  'bg-green-300': selectedBuyAdv === advItem.adv.advNo,
+                  'hover:bg-green-100': selectedBuyAdv !== advItem.adv.advNo,
+                },
               )
             }
+            onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
           >
             <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
             <button
