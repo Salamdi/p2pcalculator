@@ -2,90 +2,22 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import cn from 'classnames';
+import { AdvItem } from '@/components/rates/AdvItem';
+import { AdvGroup } from '@/components/rates/AdvGroup';
+import { useP2PQuery } from '@/hooks/useP2PQuery';
 
 export const Route = createFileRoute('/rates/')({
   component: RateComponent,
 })
 
-const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
-const sellBody = '{"fiat":"KZT","page":1,"rows":10,"tradeType":"BUY","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["KaspiBank"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
-const buyBody = '{"fiat":"MAD","page":1,"rows":10,"tradeType":"SELL","asset":"USDT","countries":[],"proMerchantAds":false,"shieldMerchantAds":false,"filterType":"all","periods":[],"additionalKycVerifyFilter":0,"publisherType":null,"payTypes":["AttijariwafaNational"],"classifies":["mass","profession","fiat_trade"],"tradedWith":false,"followed":false}'
 const googleFinUrl = '/rates/KZT-MAD'
 const tradeAmount = 5000
 export function RateComponent() {
   const [selectedSellAdv, setSelectedSellAdv] = useState('');
-  const { data: sellData } = useQuery<{
-    adv: {
-      payTimeLimit: number;
-      price: number;
-      fiatSymbol: string;
-      fiatUnit: string;
-      asset: string;
-      tradableQuantity: number;
-      minSingleTransAmount: number
-      maxSingleTransAmount: number
-      commissionRate: number;
-      tradeType: string;
-      advNo: string;
-    },
-    advertiser: {
-      nickName: string;
-      monthOrderCount: number;
-      monthFinishRate: number;
-      positiveRate: number;
-    },
-  }[]>({
-    queryKey: ['binance-kzt'],
-    queryFn: () => fetch(p2purl, {
-      method: 'POST',
-      body: sellBody,
-      headers: {
-        "content-type": "application/json",
-      },
-    }).then((res) => res.json())
-      .then((json) => json.data),
-    initialData: [],
-    select: (data) => {
-      return data;
-    },
-  })
+  const { data: sellData } = useP2PQuery({ fiat: 'KZT', tradeType: 'BUY', payTypes: ['KaspiBank'] });
 
   const [selectedBuyAdv, setSelectedBuyAdv] = useState("")
-  const { data: buyData } = useQuery<{
-    adv: {
-      payTimeLimit: number;
-      price: number;
-      fiatSymbol: string;
-      fiatUnit: string;
-      asset: string;
-      tradableQuantity: number;
-      minSingleTransAmount: number
-      maxSingleTransAmount: number
-      commissionRate: number;
-      tradeType: string;
-      advNo: string;
-    },
-    advertiser: {
-      nickName: string;
-      monthOrderCount: number;
-      monthFinishRate: number;
-      positiveRate: number;
-    },
-  }[]>({
-    queryKey: ['binance-mad'],
-    queryFn: () => fetch(p2purl, {
-      method: 'POST',
-      body: buyBody,
-      headers: {
-        "content-type": "application/json",
-      },
-    }).then((res) => res.json())
-      .then((json) => json.data),
-    initialData: [],
-    select: (data) => {
-      return data;
-    },
-  })
+  const { data: buyData } = useP2PQuery({ fiat: 'MAD', tradeType: 'SELL', payTypes: ['AttijariwafaNational'] });
 
   const { data: googleRate } = useQuery<{ rate: number }>({
     queryKey: ['google-fin'],
@@ -127,54 +59,28 @@ export function RateComponent() {
 
   return <div>
     <div className="text-sm lg:flex xl:w-2/3 mx-auto">
-      <ul className="h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 border-2 border-blue-500 m-4 rounded-lg">
-        <p className="text-center sticky top-0 bg-blue-200 p-1"><strong>Buy</strong></p>
+      <AdvGroup title="Buy" variant="buy">
         {sellData.map((advItem) => (
-          <li
+          <AdvItem
             key={advItem.adv.advNo}
-            className={
-              cn(
-                'flex justify-between py-1 px-4 items-center cursor-pointer',
-                {
-                  'bg-blue-300': selectedSellAdv === advItem.adv.advNo,
-                  'hover:bg-blue-100': selectedSellAdv !== advItem.adv.advNo,
-                },
-              )
-            }
-            onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
-          >
-            <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
-            <button
-              className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-              onClick={() => setSelectedSellAdv(advItem.adv.advNo)}
-            >Select</button>
-          </li>
+            item={advItem}
+            isSelected={selectedSellAdv === advItem.adv.advNo}
+            onSelect={setSelectedSellAdv}
+            variant="buy"
+          />
         ))}
-      </ul>
-      <ul className="h-[38dvh] overflow-y-scroll lg:flex-1 border-2 border-green-500 m-4 rounded-lg">
-        <p className="text-center sticky top-0 bg-green-200 p-1"><strong>Sell</strong></p>
+      </AdvGroup>
+      <AdvGroup title="Sell" variant="sell">
         {buyData.map((advItem) => (
-          <li
+          <AdvItem
             key={advItem.adv.advNo}
-            className={
-              cn(
-                'flex justify-between py-1 px-4 items-center cursor-pointer',
-                {
-                  'bg-green-300': selectedBuyAdv === advItem.adv.advNo,
-                  'hover:bg-green-100': selectedBuyAdv !== advItem.adv.advNo,
-                },
-              )
-            }
-            onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
-          >
-            <span>{advItem.adv.price} {advItem.adv.fiatSymbol}</span>
-            <button
-              className="bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-              onClick={() => setSelectedBuyAdv(advItem.adv.advNo)}
-            >Select</button>
-          </li>
+            item={advItem}
+            isSelected={selectedBuyAdv === advItem.adv.advNo}
+            onSelect={setSelectedBuyAdv}
+            variant="sell"
+          />
         ))}
-      </ul>
+      </AdvGroup>
     </div>
     <div className="flex justify-center mt-2">
       <table className="table-auto text-sm">

@@ -1,0 +1,18 @@
+const sellBody = {
+  fiat: "KZT",
+  page: 1,
+  rows: 10,
+  tradeType: "BUY",
+  asset: "USDT",
+  countries: [],
+  proMerchantAds: false,
+  shieldMerchantAds: false,
+  filterType: "all",
+  periods: [],
+  additionalKycVerifyFilter: 0,
+  publisherType: null,
+  payTypes: ["KaspiBank"],
+  classifies: ["mass", "profession", "fiat_trade"],
+  tradedWith: false,
+  followed: false,
+};
