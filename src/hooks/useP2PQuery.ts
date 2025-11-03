@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import { Adv } from '@/components/rates/types';
 
 const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search';
@@ -13,9 +13,9 @@ export function useP2PQuery({ fiat, tradeType, payTypes }: P2PQueryParams) {
   const queryKey = [`binance-${fiat.toLowerCase()}`, tradeType, payTypes];
   const rowsPerPage = 10;
 
-  return useInfiniteQuery<Adv[], Error, Adv[], (string | string[])[]>({
+  return useInfiniteQuery({
     queryKey,
-    queryFn: ({ pageParam = 1 }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const body = JSON.stringify({
         fiat,
         page: pageParam,
@@ -35,14 +35,15 @@ export function useP2PQuery({ fiat, tradeType, payTypes }: P2PQueryParams) {
         followed: false,
       });
 
-      return fetch(p2purl, {
+      const res = await fetch(p2purl, {
         method: 'POST',
         body,
         headers: {
           "content-type": "application/json",
         },
-      }).then((res) => res.json())
-        .then((json) => json.data)
+      });
+      const json = await res.json();
+      return json.data as Adv[];
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -51,5 +52,6 @@ export function useP2PQuery({ fiat, tradeType, payTypes }: P2PQueryParams) {
       }
       return allPages.length + 1;
     },
+    select: (data: InfiniteData<Adv[]>) => data.pages.flat(),
   });
 }

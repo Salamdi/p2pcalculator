@@ -38,15 +38,14 @@ export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroup
   const onAdvSelect = variant === 'buy' ? setSelectedSellAdv : setSelectedBuyAdv;
 
   const handleSelect = (advNo: string) => {
-    const adv = data?.pages.flat().find(a => a.adv.advNo === advNo);
+    const adv = data?.find(a => a.adv.advNo === advNo);
     onAdvSelect(adv);
   }
 
   return (
     <ul className={cn("h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 m-4 rounded-lg border-2", styles.list)}>
       <p className={cn("text-center sticky top-0 p-1", styles.title)}><strong>{title}</strong></p>
-      {data?.pages.map((page) =>
-        page.map((advItem) => (
+      {data?.map((advItem) => (
           <AdvItem
             key={advItem.adv.advNo}
             item={advItem}
@@ -55,7 +54,7 @@ export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroup
             variant={variant}
           />
         ))
-      )}
+      }
       {hasNextPage && (
         <div className="flex justify-center p-2">
           <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
