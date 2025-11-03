@@ -14,10 +14,20 @@ const googleFinUrl = '/rates/KZT-MAD'
 const tradeAmount = 5000
 export function RateComponent() {
   const [selectedSellAdv, setSelectedSellAdv] = useState('');
-  const { data: sellData } = useP2PQuery({ fiat: 'KZT', tradeType: 'BUY', payTypes: ['KaspiBank'] });
+  const {
+    data: sellData,
+    fetchNextPage: fetchNextSellPage,
+    hasNextPage: hasNextSellPage,
+    isFetchingNextPage: isFetchingNextSellPage,
+  } = useP2PQuery({ fiat: 'KZT', tradeType: 'BUY', payTypes: ['KaspiBank'] });
 
   const [selectedBuyAdv, setSelectedBuyAdv] = useState("")
-  const { data: buyData } = useP2PQuery({ fiat: 'MAD', tradeType: 'SELL', payTypes: ['AttijariwafaNational'] });
+  const { 
+    data: buyData,
+    fetchNextPage: fetchNextBuyPage,
+    hasNextPage: hasNextBuyPage,
+    isFetchingNextPage: isFetchingNextBuyPage,
+  } = useP2PQuery({ fiat: 'MAD', tradeType: 'SELL', payTypes: ['AttijariwafaNational'] });
 
   const { data: googleRate } = useQuery<{ rate: number }>({
     queryKey: ['google-fin'],
@@ -33,8 +43,8 @@ export function RateComponent() {
       return Infinity
     }
 
-    const buyAdv = buyData.find((item) => item.adv.advNo === selectedBuyAdv)
-    const sellAdv = sellData.find((item) => item.adv.advNo === selectedSellAdv)
+    const buyAdv = buyData?.pages.flat().find((item) => item.adv.advNo === selectedBuyAdv)
+    const sellAdv = sellData?.pages.flat().find((item) => item.adv.advNo === selectedSellAdv)
     const buyPrice = buyAdv?.adv.price
     const sellPrice = sellAdv?.adv.price
 
@@ -59,27 +69,43 @@ export function RateComponent() {
 
   return <div>
     <div className="text-sm lg:flex xl:w-2/3 mx-auto">
-      <AdvGroup title="Buy" variant="buy">
-        {sellData.map((advItem) => (
-          <AdvItem
-            key={advItem.adv.advNo}
-            item={advItem}
-            isSelected={selectedSellAdv === advItem.adv.advNo}
-            onSelect={setSelectedSellAdv}
-            variant="buy"
-          />
-        ))}
+      <AdvGroup
+        title="Buy"
+        variant="buy"
+        hasNextPage={hasNextSellPage}
+        onLoadMore={() => fetchNextSellPage()}
+        isFetchingNextPage={isFetchingNextSellPage}
+      >
+        {sellData?.pages.map((page) =>
+          page.map((advItem) => (
+            <AdvItem
+              key={advItem.adv.advNo}
+              item={advItem}
+              isSelected={selectedSellAdv === advItem.adv.advNo}
+              onSelect={setSelectedSellAdv}
+              variant="buy"
+            />
+          ))
+        )}
       </AdvGroup>
-      <AdvGroup title="Sell" variant="sell">
-        {buyData.map((advItem) => (
-          <AdvItem
-            key={advItem.adv.advNo}
-            item={advItem}
-            isSelected={selectedBuyAdv === advItem.adv.advNo}
-            onSelect={setSelectedBuyAdv}
-            variant="sell"
-          />
-        ))}
+      <AdvGroup
+        title="Sell"
+        variant="sell"
+        hasNextPage={hasNextBuyPage}
+        onLoadMore={() => fetchNextBuyPage()}
+        isFetchingNextPage={isFetchingNextBuyPage}
+      >
+        {buyData?.pages.map((page) =>
+          page.map((advItem) => (
+            <AdvItem
+              key={advItem.adv.advNo}
+              item={advItem}
+              isSelected={selectedBuyAdv === advItem.adv.advNo}
+              onSelect={setSelectedBuyAdv}
+              variant="sell"
+            />
+          ))
+        )}
       </AdvGroup>
     </div>
     <div className="flex justify-center mt-2">
