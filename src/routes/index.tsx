@@ -1,4 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { RateComponent } from './rates'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: RateComponent })
+export const Route = createFileRoute('/')({
+  beforeLoad: () => {
+    throw redirect({
+      to: '/rates',
+      search: {
+        asset: 'USDT',
+      },
+    })
+  },
+})
