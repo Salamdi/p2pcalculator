@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { AdvGroup } from '@/components/rates/AdvGroup';
 import { ResultsTable } from '@/components/rates/ResultsTable';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useAdvertsStore } from '@/store/adverts';
+import { useCallback } from 'react';
 
 const ASSETS = ['USDT', 'BTC', 'USDC', 'ETH'] as const;
 
@@ -46,15 +48,17 @@ export function RateComponent() {
     from: Route.id,
   });
   const navigate = useNavigate({ from: '/rates' });
+  const resetAdverts = useAdvertsStore((state) => state.reset);
 
-  const handleAssetChange = (newAsset: string) => {
+  const handleAssetChange = useCallback(async (newAsset: string) => {
     if (!newAsset) return;
-    navigate({ search: (prev) => ({ ...prev, asset: newAsset }) });
-  };
+    await navigate({ search: (prev) => ({ ...prev, asset: newAsset }) });
+    resetAdverts();
+  }, [navigate, resetAdverts]);
 
   return (
     <div>
-      <div className="flex justify-center my-4">
+      <div className="flex justify-center my-1">
         <ToggleGroup type="single" value={asset} onValueChange={handleAssetChange}>
           {ASSETS.map((assetItem) => (
             <ToggleGroupItem key={assetItem} value={assetItem}>
