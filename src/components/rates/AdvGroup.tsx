@@ -47,7 +47,7 @@ export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroup
   }
 
   return (
-    <ul className={cn("h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 m-4 rounded-lg border-2", styles.list)}>
+    <ul className={cn("h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 mx-4 rounded-lg border-2", styles.list)}>
       <p className={cn("text-center sticky top-0 p-1", styles.title)}><strong>{title}</strong></p>
       {data?.map((advItem) => (
           <AdvItem
