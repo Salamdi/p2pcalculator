@@ -20,23 +20,23 @@ type AdvGroupProps = {
   title: string;
   variant: 'buy' | 'sell';
   tradeType: 'BUY' | 'SELL';
-  payTypes: string[];
 }
 
-export function AdvGroup({ title, variant, tradeType, payTypes }: AdvGroupProps) {
+export function AdvGroup({ title, variant, tradeType }: AdvGroupProps) {
   const styles = variants[variant];
-  const { asset, buyFor, sellFor } = useSearch({
+  const { asset, buyFor, sellFor, buyPayment, sellPayment } = useSearch({
     from: '/rates/',
   });
 
   const fiat = variant === 'buy' ? buyFor : sellFor;
+  const payType = variant === 'buy' ? buyPayment : sellPayment;
 
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useP2PQuery({ fiat, tradeType, payTypes, asset: asset || 'USDT' });
+  } = useP2PQuery({ fiat, tradeType, payTypes: payType, asset: asset || 'USDT' });
 
   const { selectedSellAdv, selectedBuyAdv, setSelectedSellAdv, setSelectedBuyAdv } = useAdvertsStore();
   const selectedAdvInStore = variant === 'buy' ? selectedSellAdv : selectedBuyAdv;

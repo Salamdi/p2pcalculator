@@ -2,21 +2,41 @@ import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { AdvGroup } from '@/components/rates/AdvGroup';
 import { ResultsTable } from '@/components/rates/ResultsTable';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { cn } from '@/lib/utils';
 
 const ASSETS = ['USDT', 'BTC', 'USDC', 'ETH'] as const;
 
 export const Route = createFileRoute('/rates/')({
   component: RateComponent,
+  search: {
+    middlewares: [
+      ({ search: {
+        asset,
+        buyFor,
+        sellFor,
+        buyPayment,
+        sellPayment,
+      }, next }) => next({
+        asset: asset.toUpperCase(),
+        buyFor: buyFor.toUpperCase(),
+        sellFor: sellFor.toUpperCase(),
+        buyPayment: buyPayment.map((bp) => bp.toUpperCase()),
+        sellPayment: sellPayment.map((sp) => sp.toUpperCase()),
+      }),
+    ]
+  },
   validateSearch: (search: Record<string, unknown>): {
-    asset: string,
-    buyFor: string,
-    sellFor: string
+    asset: string;
+    buyFor: string;
+    sellFor: string;
+    buyPayment: string[];
+    sellPayment: string[];
   } => {
     return {
-      asset: (search.asset as string).toUpperCase() || 'USDT',
-      buyFor: (search.buyFor as string).toUpperCase() || 'KZT',
-      sellFor: (search.sellFor as string).toUpperCase() || 'MAD',
+      asset: (search.asset as string) || 'USDT',
+      buyFor: (search.buyFor as string) || 'KZT',
+      sellFor: (search.sellFor as string) || 'MAD',
+      buyPayment: (search.buyPayment as string[]) || ['ALL'],
+      sellPayment: (search.sellPayment as string[]) || ['ALL'],
     }
   },
 })
@@ -33,22 +53,11 @@ export function RateComponent() {
   };
 
   return (
-    <div className="pb-8">
-      <div className="flex justify-center my-1">
-        <ToggleGroup
-          type="single"
-          value={asset}
-          onValueChange={handleAssetChange}
-          variant="outline"
-        >
+    <div>
+      <div className="flex justify-center my-4">
+        <ToggleGroup type="single" value={asset} onValueChange={handleAssetChange}>
           {ASSETS.map((assetItem) => (
-            <ToggleGroupItem
-              key={assetItem}
-              value={assetItem}
-              className={cn({
-                'font-bold': asset.toUpperCase() === assetItem.toUpperCase(),
-              })}
-            >
+            <ToggleGroupItem key={assetItem} value={assetItem}>
               {assetItem}
             </ToggleGroupItem>
           ))}
@@ -59,13 +68,11 @@ export function RateComponent() {
           title="Buy"
           variant="buy"
           tradeType="BUY"
-          payTypes={['KaspiBank']}
         />
         <AdvGroup
           title="Sell"
           variant="sell"
           tradeType="SELL"
-          payTypes={['AttijariwafaNational']}
         />
       </div>
       <ResultsTable />
