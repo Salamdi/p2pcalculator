@@ -6,6 +6,8 @@ export const Route = createFileRoute('/')({
       to: '/rates',
       search: {
         asset: 'USDT',
+        buyFor: 'KZT',
+        sellFor: 'MAD'
       },
     })
   },

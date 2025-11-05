@@ -19,23 +19,24 @@ const variants = {
 type AdvGroupProps = {
   title: string;
   variant: 'buy' | 'sell';
-  fiat: string;
   tradeType: 'BUY' | 'SELL';
   payTypes: string[];
 }
 
-export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroupProps) {
+export function AdvGroup({ title, variant, tradeType, payTypes }: AdvGroupProps) {
   const styles = variants[variant];
-  const { asset } = useSearch({
+  const { asset, buyFor, sellFor } = useSearch({
     from: '/rates/',
   });
+
+  const fiat = variant === 'buy' ? buyFor : sellFor;
 
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useP2PQuery({ fiat, tradeType, payTypes, asset: asset.toUpperCase() || 'USDT' });
+  } = useP2PQuery({ fiat, tradeType, payTypes, asset: asset || 'USDT' });
 
   const { selectedSellAdv, selectedBuyAdv, setSelectedSellAdv, setSelectedBuyAdv } = useAdvertsStore();
   const selectedAdvInStore = variant === 'buy' ? selectedSellAdv : selectedBuyAdv;
@@ -50,14 +51,14 @@ export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroup
     <ul className={cn("h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 mx-4 rounded-lg border-2", styles.list)}>
       <p className={cn("text-center sticky top-0 p-1", styles.title)}><strong>{title}</strong></p>
       {data?.map((advItem) => (
-          <AdvItem
-            key={advItem.adv.advNo}
-            item={advItem}
-            isSelected={selectedAdvInStore?.adv.advNo === advItem.adv.advNo}
-            onSelect={() => handleSelect(advItem.adv.advNo)}
-            variant={variant}
-          />
-        ))
+        <AdvItem
+          key={advItem.adv.advNo}
+          item={advItem}
+          isSelected={selectedAdvInStore?.adv.advNo === advItem.adv.advNo}
+          onSelect={() => handleSelect(advItem.adv.advNo)}
+          variant={variant}
+        />
+      ))
       }
       {hasNextPage && (
         <div className="flex justify-center p-2">

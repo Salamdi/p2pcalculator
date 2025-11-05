@@ -2,15 +2,18 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import cn from 'classnames';
 import { useAdvertsStore } from '@/store/adverts';
+import { useSearch } from '@tanstack/react-router';
 
-const googleFinUrl = '/rates/KZT-MAD';
 const tradeAmount = 5000;
 
 export function ResultsTable() {
   const { selectedSellAdv, selectedBuyAdv } = useAdvertsStore();
+  const { buyFor, sellFor } = useSearch({ from: '/rates/' });
+
+  const googleFinUrl = `/rates/${buyFor}-${sellFor}`;
 
   const { data: googleRate } = useQuery<{ rate: number }>({
-    queryKey: ['google-fin'],
+    queryKey: ['google-fin', buyFor, sellFor],
     queryFn: () => fetch(googleFinUrl, {
       method: 'GET',
     }).then((res) => res.json()),
@@ -48,11 +51,11 @@ export function ResultsTable() {
         <thead>
           <tr>
             <th className="border p-1">
-              <pre>Bin MAD/KZT</pre>
+              <pre>Bin {buyFor}/{sellFor}</pre>
             </th>
             <th className="border p-1">
               <pre>
-                Goo MAD/KZT
+                Goo {buyFor}/{sellFor}
               </pre>
             </th>
             <th className="border p-1">

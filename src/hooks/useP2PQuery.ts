@@ -30,7 +30,7 @@ export function useP2PQuery({ fiat, tradeType, payTypes, asset }: P2PQueryParams
         periods: [],
         additionalKycVerifyFilter: 0,
         publisherType: null,
-        payTypes,
+        payTypes: [],
         classifies: ["mass", "profession", "fiat_trade"],
         tradedWith: false,
         followed: false,

@@ -8,9 +8,15 @@ const ASSETS = ['USDT', 'BTC', 'USDC', 'ETH'] as const;
 
 export const Route = createFileRoute('/rates/')({
   component: RateComponent,
-  validateSearch: (search: Record<string, unknown>): { asset: string } => {
+  validateSearch: (search: Record<string, unknown>): {
+    asset: string,
+    buyFor: string,
+    sellFor: string
+  } => {
     return {
-      asset: (search.asset as string) || 'USDT',
+      asset: (search.asset as string).toUpperCase() || 'USDT',
+      buyFor: (search.buyFor as string).toUpperCase() || 'KZT',
+      sellFor: (search.sellFor as string).toUpperCase() || 'MAD',
     }
   },
 })
@@ -52,14 +58,12 @@ export function RateComponent() {
         <AdvGroup
           title="Buy"
           variant="buy"
-          fiat="KZT"
           tradeType="BUY"
           payTypes={['KaspiBank']}
         />
         <AdvGroup
           title="Sell"
           variant="sell"
-          fiat="MAD"
           tradeType="SELL"
           payTypes={['AttijariwafaNational']}
         />
