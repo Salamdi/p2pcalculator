@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useP2PQuery } from '@/hooks/useP2PQuery';
 import { AdvItem } from './AdvItem';
 import { useAdvertsStore } from '@/store/adverts';
+import { useSearch } from '@tanstack/react-router';
 
 const variants = {
   buy: {
@@ -25,13 +26,16 @@ type AdvGroupProps = {
 
 export function AdvGroup({ title, variant, fiat, tradeType, payTypes }: AdvGroupProps) {
   const styles = variants[variant];
+  const { asset } = useSearch({
+    from: '/rates/',
+  });
 
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useP2PQuery({ fiat, tradeType, payTypes });
+  } = useP2PQuery({ fiat, tradeType, payTypes, asset: asset.toUpperCase() || 'USDT' });
 
   const { selectedSellAdv, selectedBuyAdv, setSelectedSellAdv, setSelectedBuyAdv } = useAdvertsStore();
   const selectedAdvInStore = variant === 'buy' ? selectedSellAdv : selectedBuyAdv;

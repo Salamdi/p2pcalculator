@@ -4,6 +4,9 @@ import { ResultsTable } from '@/components/rates/ResultsTable';
 
 export const Route = createFileRoute('/rates/')({
   component: RateComponent,
+  validateSearch: ({asset}: Record<'asset', 'USDT' | 'BTC' | 'USDC' | 'ETH'>) => ({
+    asset,
+  })
 })
 
 export function RateComponent() {

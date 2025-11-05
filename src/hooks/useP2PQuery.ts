@@ -7,10 +7,11 @@ type P2PQueryParams = {
   fiat: string;
   tradeType: 'BUY' | 'SELL';
   payTypes: string[];
+  asset: string;
 }
 
-export function useP2PQuery({ fiat, tradeType, payTypes }: P2PQueryParams) {
-  const queryKey = [`binance-${fiat.toLowerCase()}`, tradeType, payTypes];
+export function useP2PQuery({ fiat, tradeType, payTypes, asset }: P2PQueryParams) {
+  const queryKey = [`binance-${fiat.toLowerCase()}`, tradeType, payTypes, asset];
   const rowsPerPage = 10;
 
   return useInfiniteQuery({
@@ -21,7 +22,7 @@ export function useP2PQuery({ fiat, tradeType, payTypes }: P2PQueryParams) {
         page: pageParam,
         rows: rowsPerPage,
         tradeType,
-        asset: "USDT",
+        asset,
         countries: [],
         proMerchantAds: false,
         shieldMerchantAds: false,
