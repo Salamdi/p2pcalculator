@@ -89,7 +89,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
         <Button variant='outline'>
           {isPending ? <Spinner /> : (
             <>
-              <Avatar className="w-6 h-6">
+              <Avatar className="w-5 h-5">
                 <AvatarImage src={current?.iconUrl} />
                 <AvatarFallback>{current?.currencySymbol}</AvatarFallback>
               </Avatar>
