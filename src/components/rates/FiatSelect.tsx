@@ -46,7 +46,13 @@ export function FiatSelect({ variant }: FiatSelectProps) {
       const json: { data: ICurrency[] } = await res.json()
       return json.data
     },
-    select: (data) => data
+    select: (data) => data.map(({ iconUrl, ...restFields }) => {
+      const url = new URL(iconUrl)
+      return {
+        ...restFields,
+        iconUrl: url.pathname,
+      }
+    })
   })
 
   const handleQuery: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
