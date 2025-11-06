@@ -37,8 +37,8 @@ export const Route = createFileRoute('/rates/')({
       asset: (search.asset as string) || 'USDT',
       buyFor: (search.buyFor as string) || 'KZT',
       sellFor: (search.sellFor as string) || 'MAD',
-      buyPayment: (search.buyPayment as string[]) || ['ALL'],
-      sellPayment: (search.sellPayment as string[]) || ['ALL'],
+      buyPayment: (search.buyPayment as string[]) || [],
+      sellPayment: (search.sellPayment as string[]) || [],
     }
   },
 })
