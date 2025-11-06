@@ -18,8 +18,8 @@ export function ResultsTable() {
       buyFor === sellFor
         ? { rate: 1 }
         : fetch(googleFinUrl, {
-            method: 'GET',
-          }).then((res) => res.json()),
+          method: 'GET',
+        }).then((res) => res.json()),
     initialData: { rate: -1 },
     select: ({ rate }) => ({ rate: rate }),
   })
@@ -74,13 +74,13 @@ export function ResultsTable() {
         <tbody>
           <tr>
             <td className="border p-1">
-              <pre>{binRate === Infinity ? 'N/A' : binRate.toFixed(4)}</pre>
+              <pre>{binRate === Infinity || binRate === undefined ? 'N/A' : binRate.toFixed(4)}</pre>
             </td>
             <td className="border p-1">
-              {googleRate.rate === -1 ? 'N/A' : googleRate.rate.toFixed(4)}
+              {googleRate.rate === -1 || googleRate?.rate === undefined ? 'N/A' : googleRate.rate.toFixed(4)}
             </td>
             <td className="border p-1">
-              {absDiff === Infinity ? 'N/A' : absDiff.toFixed(3)}
+              {absDiff === Infinity || absDiff === undefined ? 'N/A' : absDiff.toFixed(3)}
             </td>
             <td
               className={cn('border p-1', {
@@ -105,7 +105,7 @@ export function ResultsTable() {
                   !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {googleRate.rate === -1 || isNaN(gain) ? 'N/A' : gain.toFixed(2)}
+              {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? 'N/A' : gain.toFixed(2)}
             </td>
           </tr>
         </tbody>

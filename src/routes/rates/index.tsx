@@ -13,11 +13,11 @@ export const Route = createFileRoute('/rates/')({
     middlewares: [
       ({ search: { asset, buyFor, sellFor, buyPayment, sellPayment }, next }) =>
         next({
-          asset: asset.toUpperCase(),
-          buyFor: buyFor.toUpperCase(),
-          sellFor: sellFor.toUpperCase(),
-          buyPayment,
-          sellPayment,
+          asset: asset?.toUpperCase() ?? 'USDT',
+          buyFor: buyFor?.toUpperCase() ?? 'KZT',
+          sellFor: sellFor?.toUpperCase() ?? 'MAD',
+          buyPayment: buyPayment ?? [],
+          sellPayment: sellPayment ?? [],
         }),
     ],
   },

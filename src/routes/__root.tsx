@@ -2,6 +2,7 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -17,6 +18,18 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  notFoundComponent: () => {
+    throw redirect({
+      to: '/rates',
+      search: {
+        asset: 'USDT',
+        buyFor: 'KZT',
+        sellFor: 'MAD',
+        buyPayment: [],
+        sellPayment: [],
+      },
+    })
+  },
   head: () => ({
     meta: [
       {
