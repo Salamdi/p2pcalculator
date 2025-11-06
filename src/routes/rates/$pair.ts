@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from '@tanstack/react-router'
 
 const googleFinUrl = 'https://google.com/finance/quote'
 const googleRateRegex = /data-last-price="([\d.]+)"/g

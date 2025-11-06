@@ -1,49 +1,52 @@
-import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import cn from 'classnames';
-import { useAdvertsStore } from '@/store/adverts';
-import { useSearch } from '@tanstack/react-router';
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import cn from 'classnames'
+import { useSearch } from '@tanstack/react-router'
+import { useAdvertsStore } from '@/store/adverts'
 
-const tradeAmount = 5000;
+const tradeAmount = 5000
 
 export function ResultsTable() {
-  const { selectedSellAdv, selectedBuyAdv } = useAdvertsStore();
-  const { buyFor, sellFor } = useSearch({ from: '/rates/' });
+  const { selectedSellAdv, selectedBuyAdv } = useAdvertsStore()
+  const { buyFor, sellFor } = useSearch({ from: '/rates/' })
 
-  const googleFinUrl = `/rates/${buyFor}-${sellFor}`;
+  const googleFinUrl = `/rates/${buyFor}-${sellFor}`
 
   const { data: googleRate } = useQuery<{ rate: number }>({
     queryKey: ['google-fin', buyFor, sellFor],
-    queryFn: () => buyFor === sellFor ? { rate: 1 } : fetch(googleFinUrl, {
-      method: 'GET',
-    }).then((res) => res.json()),
+    queryFn: () =>
+      buyFor === sellFor
+        ? { rate: 1 }
+        : fetch(googleFinUrl, {
+            method: 'GET',
+          }).then((res) => res.json()),
     initialData: { rate: -1 },
     select: ({ rate }) => ({ rate: rate }),
-  });
+  })
 
   const binRate = useMemo(() => {
     if (!selectedBuyAdv || !selectedSellAdv) {
-      return Infinity;
+      return Infinity
     }
-    const buyPrice = selectedBuyAdv.adv.price;
-    const sellPrice = selectedSellAdv.adv.price;
+    const buyPrice = selectedBuyAdv.adv.price
+    const sellPrice = selectedSellAdv.adv.price
     if (!buyPrice || !sellPrice) {
-      return Infinity;
+      return Infinity
     }
-    return buyPrice / sellPrice;
-  }, [selectedBuyAdv, selectedSellAdv]);
+    return buyPrice / sellPrice
+  }, [selectedBuyAdv, selectedSellAdv])
 
   const absDiff = useMemo(() => {
-    return binRate - googleRate.rate;
-  }, [binRate, googleRate]);
+    return binRate - googleRate.rate
+  }, [binRate, googleRate])
 
   const relDiff = useMemo(() => {
-    return (absDiff / binRate);
-  }, [binRate, absDiff]);
+    return absDiff / binRate
+  }, [binRate, absDiff])
 
   const gain = useMemo(() => {
-    return relDiff * tradeAmount;
-  }, [relDiff]);
+    return relDiff * tradeAmount
+  }, [relDiff])
 
   return (
     <div className="flex justify-center mt-2">
@@ -51,7 +54,9 @@ export function ResultsTable() {
         <thead>
           <tr>
             <th className="border p-1">
-              <pre>Bin {buyFor}/{sellFor}</pre>
+              <pre>
+                Bin {buyFor}/{sellFor}
+              </pre>
             </th>
             <th className="border p-1">
               <pre>
@@ -69,9 +74,7 @@ export function ResultsTable() {
         <tbody>
           <tr>
             <td className="border p-1">
-              <pre>
-                {binRate === Infinity ? 'N/A' : binRate.toFixed(4)}
-              </pre>
+              <pre>{binRate === Infinity ? 'N/A' : binRate.toFixed(4)}</pre>
             </td>
             <td className="border p-1">
               {googleRate.rate === -1 ? 'N/A' : googleRate.rate.toFixed(4)}
@@ -80,19 +83,26 @@ export function ResultsTable() {
               {absDiff === Infinity ? 'N/A' : absDiff.toFixed(3)}
             </td>
             <td
-              className={cn("border p-1", {
-                'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
-                'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
-              })}>
-              {googleRate.rate === -1 || isNaN(relDiff) ? 'N/A' : `${(relDiff * 100).toFixed(3)}%`}
+              className={cn('border p-1', {
+                'bg-red-300':
+                  !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
+                'bg-green-300':
+                  !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
+              })}
+            >
+              {googleRate.rate === -1 || isNaN(relDiff)
+                ? 'N/A'
+                : `${(relDiff * 100).toFixed(3)}%`}
             </td>
           </tr>
           <tr>
             <td
               colSpan={4}
-              className={cn("border p-1", {
-                'bg-red-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
-                'bg-green-300': !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
+              className={cn('border p-1', {
+                'bg-red-300':
+                  !isNaN(relDiff) && relDiff !== Infinity && relDiff < 0,
+                'bg-green-300':
+                  !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
               {googleRate.rate === -1 || isNaN(gain) ? 'N/A' : gain.toFixed(2)}
@@ -101,5 +111,5 @@ export function ResultsTable() {
         </tbody>
       </table>
     </div>
-  );
+  )
 }

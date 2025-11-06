@@ -1,18 +1,24 @@
-import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
-import { Adv } from '@/components/rates/types';
+import { useInfiniteQuery } from '@tanstack/react-query'
+import type { InfiniteData } from '@tanstack/react-query'
+import type { Adv } from '@/components/rates/types'
 
-const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search';
+const p2purl = '/bapi/c2c/v2/friendly/c2c/adv/search'
 
 type P2PQueryParams = {
-  fiat: string;
-  tradeType: 'BUY' | 'SELL';
-  payTypes: string[];
-  asset: string;
+  fiat: string
+  tradeType: 'BUY' | 'SELL'
+  payTypes: Array<string>
+  asset: string
 }
 
-export function useP2PQuery({ fiat, tradeType, payTypes, asset }: P2PQueryParams) {
-  const queryKey = [`binance-${fiat.toLowerCase()}`, tradeType, payTypes, asset];
-  const rowsPerPage = 10;
+export function useP2PQuery({
+  fiat,
+  tradeType,
+  payTypes,
+  asset,
+}: P2PQueryParams) {
+  const queryKey = [`binance-${fiat.toLowerCase()}`, tradeType, payTypes, asset]
+  const rowsPerPage = 10
 
   return useInfiniteQuery({
     queryKey,
@@ -26,33 +32,33 @@ export function useP2PQuery({ fiat, tradeType, payTypes, asset }: P2PQueryParams
         countries: [],
         proMerchantAds: false,
         shieldMerchantAds: false,
-        filterType: "all",
+        filterType: 'all',
         periods: [],
         additionalKycVerifyFilter: 0,
         publisherType: null,
-        payTypes: [],
-        classifies: ["mass", "profession", "fiat_trade"],
+        payTypes: payTypes,
+        classifies: ['mass', 'profession', 'fiat_trade'],
         tradedWith: false,
         followed: false,
-      });
+      })
 
       const res = await fetch(p2purl, {
         method: 'POST',
         body,
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
-      });
-      const json = await res.json();
-      return json.data as Adv[];
+      })
+      const json = await res.json()
+      return json.data as Array<Adv>
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.length < rowsPerPage) {
-        return undefined;
+        return undefined
       }
-      return allPages.length + 1;
+      return allPages.length + 1
     },
-    select: (data: InfiniteData<Adv[]>) => data.pages.flat(),
-  });
+    select: (data: InfiniteData<Array<Adv>>) => data.pages.flat(),
+  })
 }
