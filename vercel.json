@@ -8,10 +8,6 @@
     {
       "source": "/finance/:path*",
       "destination": "https://google.com/finance/:path*"
-    },
-    {
-      "source": "/image/:path*",
-      "destination": "https://bin.bnbstatic.com/image/:path*"
     }
   ]
 }

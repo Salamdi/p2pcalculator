@@ -46,11 +46,10 @@ export function FiatSelect({ variant }: FiatSelectProps) {
       const json: { data: ICurrency[] } = await res.json()
       return json.data
     },
-    select: (data) => data.map(({ iconUrl, ...restFields }) => {
-      const url = new URL(iconUrl)
+    select: (data) => data.map((currency) => {
       return {
-        ...restFields,
-        iconUrl: url.pathname,
+        ...currency,
+        iconUrl: `/currencyIcons/${currency.currencyCode}.png`,
       }
     })
   })
@@ -90,7 +89,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
         <Button variant='outline'>
           {isPending ? <Spinner /> : (
             <>
-              <Avatar>
+              <Avatar className="w-6 h-6">
                 <AvatarImage src={current?.iconUrl} />
                 <AvatarFallback>{current?.currencySymbol}</AvatarFallback>
               </Avatar>
