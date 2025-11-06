@@ -107,7 +107,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
         </DrawerHeader>
 
         <ItemGroup>
-          <div className="h-[65dvh]">
+          <div className="h-[65dvh] overflow-y-auto">
             {fiats === undefined || isPending
               ? <Spinner />
               : fiats
