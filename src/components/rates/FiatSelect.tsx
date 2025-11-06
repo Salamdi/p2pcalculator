@@ -13,6 +13,7 @@ import { ChangeEventHandler, MouseEventHandler, useCallback, useMemo, useRef, us
 import { Item, ItemContent, ItemGroup, ItemMedia, ItemTitle } from '../ui/item'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { useQuery } from '@tanstack/react-query'
+import { useAdvertsStore } from '@/store/adverts'
 import { Spinner } from '../ui/spinner'
 import { Input } from '../ui/input'
 
@@ -34,6 +35,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
   })
   const navigate = useNavigate({ from: '/rates' })
   const [query, setQuery] = useState('')
+  const resetAdverts = useAdvertsStore((state) => state.reset);
   const { data: fiats, isPending } = useQuery<ICurrency[]>({
     queryKey: ['fiat-list'],
     queryFn: async () => {
@@ -69,6 +71,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
     const currency = (event.target as HTMLDivElement).textContent
     const field = variant === 'buy' ? 'buyFor' : 'sellFor'
     await navigate({ search: (prev) => ({ ...prev, [field]: currency }) })
+    resetAdverts()
   }, [variant, navigate])
 
   const handleDrawerClose = useCallback(() => {
