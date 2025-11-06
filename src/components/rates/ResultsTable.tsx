@@ -14,7 +14,7 @@ export function ResultsTable() {
 
   const { data: googleRate } = useQuery<{ rate: number }>({
     queryKey: ['google-fin', buyFor, sellFor],
-    queryFn: () => fetch(googleFinUrl, {
+    queryFn: () => buyFor === sellFor ? { rate: 1 } : fetch(googleFinUrl, {
       method: 'GET',
     }).then((res) => res.json()),
     initialData: { rate: -1 },

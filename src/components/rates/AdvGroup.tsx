@@ -4,6 +4,7 @@ import { useP2PQuery } from '@/hooks/useP2PQuery';
 import { AdvItem } from './AdvItem';
 import { useAdvertsStore } from '@/store/adverts';
 import { useSearch } from '@tanstack/react-router';
+import { FiatSelect } from './FiatSelect';
 
 const variants = {
   buy: {
@@ -49,7 +50,12 @@ export function AdvGroup({ title, variant, tradeType }: AdvGroupProps) {
 
   return (
     <ul className={cn("h-[38dvh] mb-4 overflow-y-scroll lg:flex-1 mx-4 rounded-lg border-2", styles.list)}>
-      <p className={cn("text-center sticky top-0 p-1", styles.title)}><strong>{title}</strong></p>
+      <div className={cn("flex items-center sticky top-0 p-1 px-4", styles.title)}>
+        <p><strong>{title}</strong></p>
+        <div className="flex-1 flex justify-end">
+          <FiatSelect variant={variant} />
+        </div>
+      </div>
       {data?.map((advItem) => (
         <AdvItem
           key={advItem.adv.advNo}
