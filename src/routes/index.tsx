@@ -10,6 +10,7 @@ export const Route = createFileRoute('/')({
         sellFor: 'MAD',
         buyPayment: [],
         sellPayment: [],
+        tradeAmount: 5000,
       },
     })
   },
