@@ -27,6 +27,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         sellFor: 'MAD',
         buyPayment: [],
         sellPayment: [],
+        tradeAmount: 5000,
       },
     })
   },
@@ -40,7 +41,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        name: 'description',
+        content: 'Binance P2P Gain/Loss Calculator — a simple web app that automates arbitrage analysis between fiat currencies on Binance P2P. Instantly compare buy and sell ads, fetch live Google Finance rates, and calculate gain/loss percentages and estimated profit in seconds.',
+      },
+      {
+        title: 'Binance P2P Gain/Loss Calculator',
       },
     ],
     links: [
