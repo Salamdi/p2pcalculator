@@ -11,13 +11,24 @@ export const Route = createFileRoute('/rates/')({
   component: RateComponent,
   search: {
     middlewares: [
-      ({ search: { asset, buyFor, sellFor, buyPayment, sellPayment }, next }) =>
+      ({
+        search: {
+          asset,
+          buyFor,
+          sellFor,
+          buyPayment,
+          sellPayment,
+          tradeAmount,
+        },
+        next,
+      }) =>
         next({
           asset: asset?.toUpperCase() ?? 'USDT',
           buyFor: buyFor?.toUpperCase() ?? 'KZT',
           sellFor: sellFor?.toUpperCase() ?? 'MAD',
           buyPayment: buyPayment ?? [],
           sellPayment: sellPayment ?? [],
+          tradeAmount: tradeAmount ?? 5000,
         }),
     ],
   },
@@ -29,13 +40,16 @@ export const Route = createFileRoute('/rates/')({
     sellFor: string
     buyPayment: Array<string>
     sellPayment: Array<string>
+    tradeAmount: number
   } => {
+    const { tradeAmount } = search
     return {
       asset: (search.asset as string) || 'USDT',
       buyFor: (search.buyFor as string) || 'KZT',
       sellFor: (search.sellFor as string) || 'MAD',
       buyPayment: (search.buyPayment as Array<string>) || [],
       sellPayment: (search.sellPayment as Array<string>) || [],
+      tradeAmount: isNaN(tradeAmount as number) ? 5000 : tradeAmount as number,
     }
   },
 })

@@ -3,12 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import cn from 'classnames'
 import { useSearch } from '@tanstack/react-router'
 import { useAdvertsStore } from '@/store/adverts'
-
-const tradeAmount = 5000
+import { TradeAmountSelect } from './TradeAmountSelect'
 
 export function ResultsTable() {
   const { selectedSellAdv, selectedBuyAdv } = useAdvertsStore()
-  const { buyFor, sellFor } = useSearch({ from: '/rates/' })
+  const { buyFor, sellFor, tradeAmount } = useSearch({ from: '/rates/' })
 
   const googleFinUrl = `/rates/${buyFor}-${sellFor}`
 
@@ -46,7 +45,7 @@ export function ResultsTable() {
 
   const gain = useMemo(() => {
     return relDiff * tradeAmount
-  }, [relDiff])
+  }, [relDiff, tradeAmount])
 
   return (
     <div className="flex justify-center mt-2 mb-8">
@@ -115,7 +114,8 @@ export function ResultsTable() {
             >
               {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? 'N/A' : (
                 <pre>
-                  <strong>{gain < 0 ? 'Loss' : 'Gain'} from {tradeAmount}: </strong>
+                  <strong>{gain < 0 ? 'Loss' : 'Gain'} from <TradeAmountSelect />
+                    : </strong>
                   {gain.toFixed(2)}
                 </pre>
               )}
