@@ -49,18 +49,18 @@ export function ResultsTable() {
   }, [relDiff])
 
   return (
-    <div className="flex justify-center mt-2">
+    <div className="flex justify-center mt-2 mb-8">
       <table className="table-auto text-sm">
         <thead>
           <tr>
             <th className="border p-1">
               <pre>
-                Bin {buyFor}/{sellFor}
+                Bin {sellFor}/{buyFor}
               </pre>
             </th>
             <th className="border p-1">
               <pre>
-                Goo {buyFor}/{sellFor}
+                Goo {sellFor}/{buyFor}
               </pre>
             </th>
             <th className="border p-1">
@@ -74,13 +74,19 @@ export function ResultsTable() {
         <tbody>
           <tr>
             <td className="border p-1">
-              <pre>{binRate === Infinity || binRate === undefined ? 'N/A' : binRate.toFixed(4)}</pre>
+              <pre>
+                {binRate === Infinity || binRate === undefined ? 'N/A' : binRate.toFixed(4)}
+              </pre>
             </td>
             <td className="border p-1">
-              {googleRate.rate === -1 || googleRate?.rate === undefined ? 'N/A' : googleRate.rate.toFixed(4)}
+              <pre>
+                {googleRate.rate === -1 || googleRate?.rate === undefined ? 'N/A' : googleRate.rate.toFixed(4)}
+              </pre>
             </td>
             <td className="border p-1">
-              {absDiff === Infinity || absDiff === undefined ? 'N/A' : absDiff.toFixed(3)}
+              <pre>
+                {absDiff === Infinity || absDiff === undefined ? 'N/A' : absDiff.toFixed(3)}
+              </pre>
             </td>
             <td
               className={cn('border p-1', {
@@ -90,9 +96,11 @@ export function ResultsTable() {
                   !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {googleRate.rate === -1 || isNaN(relDiff)
-                ? 'N/A'
-                : `${(relDiff * 100).toFixed(3)}%`}
+              <pre>
+                {googleRate.rate === -1 || isNaN(relDiff)
+                  ? 'N/A'
+                  : `${(relDiff * 100).toFixed(3)}%`}
+              </pre>
             </td>
           </tr>
           <tr>
@@ -105,7 +113,12 @@ export function ResultsTable() {
                   !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? 'N/A' : gain.toFixed(2)}
+              {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? 'N/A' : (
+                <pre>
+                  <strong>{gain < 0 ? 'Loss' : 'Gain'} from {tradeAmount}: </strong>
+                  {gain.toFixed(2)}
+                </pre>
+              )}
             </td>
           </tr>
         </tbody>
