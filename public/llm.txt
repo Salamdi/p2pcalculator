@@ -1,0 +1,25 @@
+# LLM Description for Binance P2P Gain/Loss Calculator
+
+title: Binance P2P Gain/Loss Calculator
+version: 1.0
+author: [Salamdi]
+url: https://p2pcalc.vercel.app
+description: A web application that calculates potential arbitrage opportunities between fiat currencies on Binance P2P. Users select buy and sell adverts, and the app automatically compares Binance P2P rates with live Google Finance rates, displaying gain/loss percentages and estimated profit or loss for fixed amounts.
+
+capabilities:
+  - Fetches Binance P2P adverts by asset, currency, and payment method.
+  - Retrieves real-time Google Finance exchange rates.
+  - Calculates Binance and Google EUR/GEL (or other pair) rates.
+  - Computes gain/loss percentages and estimated profit/loss for user-defined amounts.
+  - Displays results in an interactive table with color-coded indicators.
+
+example_calculation:
+  asset: USDT
+  buy_ad: 1 USDT = 2.71 GEL
+  sell_ad: 1 USDT = 0.89 EUR
+  google_rate: 0.3206 EUR/GEL
+  binance_rate: 0.3284 EUR/GEL
+  gain: 2.37%
+  profit_5000: 118.5 EUR
+
+tags: binance p2p, arbitrage calculator, crypto tools, fiat currency exchange, gain loss calculator
