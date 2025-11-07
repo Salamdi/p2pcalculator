@@ -78,7 +78,7 @@ export function AdvGroup({ title, variant, tradeType }: AdvGroupProps) {
           key={advItem.adv.advNo}
           item={advItem}
           isSelected={selectedAdvInStore?.adv.advNo === advItem.adv.advNo}
-          onSelect={() => handleSelect(advItem.adv.advNo)}
+          onSelect={handleSelect}
           variant={variant}
         />
       ))}

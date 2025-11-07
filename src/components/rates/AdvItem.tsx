@@ -5,17 +5,17 @@ import { Button } from '@/components/ui/button'
 const variants = {
   buy: {
     item: {
-      selected: 'bg-blue-300',
+      selected: 'bg-blue-300 sticky top-11 bottom-0',
       hover: 'hover:bg-blue-100',
     },
-    button: 'bg-blue-500 hover:bg-blue-600',
+    button: 'min-w-25 bg-blue-500 hover:bg-blue-600',
   },
   sell: {
     item: {
-      selected: 'bg-green-300',
+      selected: 'bg-green-300 sticky top-11 bottom-0',
       hover: 'hover:bg-green-100',
     },
-    button: 'bg-green-500 hover:bg-green-600',
+    button: 'min-w-25 bg-green-500 hover:bg-green-600',
   },
 }
 
@@ -37,7 +37,13 @@ export function AdvItem({ item, isSelected, onSelect, variant }: AdvItemProps) {
           [styles.item.hover]: !isSelected,
         },
       )}
-      onClick={() => onSelect(item.adv.advNo)}
+      onClick={() => {
+        if (isSelected) {
+          onSelect('')
+          return
+        }
+        onSelect(item.adv.advNo)
+      }}
     >
       <span>
         {item.adv.price} {item.adv.fiatSymbol}
@@ -47,12 +53,8 @@ export function AdvItem({ item, isSelected, onSelect, variant }: AdvItemProps) {
           styles.button,
           'disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors',
         )}
-        onClick={(e) => {
-          e.stopPropagation()
-          onSelect(item.adv.advNo)
-        }}
       >
-        Select
+        {isSelected ? 'Deselect' : 'Select'}
       </Button>
     </li>
   )
