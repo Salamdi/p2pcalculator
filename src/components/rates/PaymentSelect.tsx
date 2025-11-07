@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { ChevronsUpDown } from 'lucide-react'
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Item, ItemContent, ItemGroup, ItemTitle } from '../ui/item'
 import { Spinner } from '../ui/spinner'
@@ -38,7 +38,10 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
   })
   const navigate = useNavigate({ from: '/rates' })
   const [query, setQuery] = useState('')
-  const [localPayTypes, setLocalPayTypes] = useState<string[]>([])
+  const payTypes = useMemo(() => {
+    return variant === 'buy' ? buyPayment : sellPayment
+  }, [variant, buyPayment, sellPayment])
+  const [localPayTypes, setLocalPayTypes] = useState<string[]>(payTypes)
   const resetAdverts = useAdvertsStore((state) => state.reset)
   const { data: paymentMethods, isPending } = useQuery<Array<IPaymentMethod>>({
     queryKey: ['payment-methods', fiat],
@@ -57,14 +60,6 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
       return json.data.tradeMethods
     },
   })
-
-  const payTypes = useMemo(() => {
-    return variant === 'buy' ? buyPayment : sellPayment
-  }, [variant, buyPayment, sellPayment])
-
-  useEffect(() => {
-    setLocalPayTypes(payTypes || [])
-  }, [payTypes])
 
   const handleQuery: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
@@ -107,7 +102,8 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
 
   const handleDrawerClose = useCallback(() => {
     setQuery('')
-  }, [setQuery])
+    setLocalPayTypes(payTypes)
+  }, [setQuery, payTypes])
 
   const isChecked = (identifier: string) => {
     if (identifier === 'all') {
