@@ -1,6 +1,8 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import { Input } from '../ui/input'
+import { HoldButton } from '../ui/hold-button'
 import {
   Drawer,
   DrawerClose,
@@ -11,31 +13,37 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-import { Input } from '../ui/input'
-import { HoldButton } from '../ui/hold-button'
 
 export function TradeAmountSelect() {
   const { tradeAmount } = useSearch({
     from: '/rates/',
   })
   const navigate = useNavigate({ from: '/rates' })
-  const [localTradeAmount, setLocalTradeAmount] = useState(tradeAmount.toString(10))
+  const [localTradeAmount, setLocalTradeAmount] = useState(
+    tradeAmount.toString(10),
+  )
 
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const handleSave = useCallback(async () => {
     await navigate({
-      search: (prev) => ({ ...prev, tradeAmount: parseFloat(localTradeAmount) }),
+      search: (prev) => ({
+        ...prev,
+        tradeAmount: parseFloat(localTradeAmount),
+      }),
     })
     closeButtonRef.current?.click()
   }, [navigate, localTradeAmount])
 
-  const handleDrawerOpenChange = useCallback((open: boolean) => {
-    if (!open) {
-      return
-    }
-    setLocalTradeAmount(tradeAmount.toString(10))
-  }, [tradeAmount, setLocalTradeAmount])
+  const handleDrawerOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        return
+      }
+      setLocalTradeAmount(tradeAmount.toString(10))
+    },
+    [tradeAmount, setLocalTradeAmount],
+  )
 
   return (
     <Drawer onOpenChange={handleDrawerOpenChange}>
@@ -47,7 +55,6 @@ export function TradeAmountSelect() {
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>
-
             <div className="flex flex-col gap-4 pb-4">
               <Input
                 type="number"
@@ -58,17 +65,27 @@ export function TradeAmountSelect() {
                 min={0}
               />
               <div className="flex gap-4">
-                <HoldButton className="flex-1 select-none" variant="outline" onHold={() => setLocalTradeAmount(prev => (parseFloat(prev) - 10).toString(10))}>
+                <HoldButton
+                  className="flex-1 select-none"
+                  variant="outline"
+                  onHold={() =>
+                    setLocalTradeAmount((prev) =>
+                      (parseFloat(prev) - 10).toString(10),
+                    )
+                  }
+                >
                   <MinusIcon />
                 </HoldButton>
                 <HoldButton
                   className="flex-1 select-none"
-                  onHold={() => setLocalTradeAmount(prev => {
-                    if (!prev || isNaN(parseFloat(prev))) {
-                      return '10'
-                    }
-                    return (parseFloat(prev) + 10).toString(10)
-                  })}
+                  onHold={() =>
+                    setLocalTradeAmount((prev) => {
+                      if (!prev || isNaN(parseFloat(prev))) {
+                        return '10'
+                      }
+                      return (parseFloat(prev) + 10).toString(10)
+                    })
+                  }
                 >
                   <PlusIcon />
                 </HoldButton>
@@ -87,6 +104,6 @@ export function TradeAmountSelect() {
           </Button>
         </DrawerFooter>
       </DrawerContent>
-    </Drawer >
+    </Drawer>
   )
 }

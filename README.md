@@ -1,15 +1,15 @@
 ## 🧾 About
 
-**Binance P2P Gain/Loss Calculator** is a lightweight web application that helps you quickly assess potential arbitrage opportunities between different fiat currencies on **Binance P2P**.  
+**Binance P2P Gain/Loss Calculator** is a lightweight web application that helps you quickly assess potential arbitrage opportunities between different fiat currencies on **Binance P2P**.
 
 Instead of manually comparing ads and calculating conversion differences, this app automates the process.  
 You simply choose a **buy** advert (to purchase crypto with one currency) and a **sell** advert (to sell the same crypto for another currency), and the app instantly calculates:
 
-- **Binance P2P exchange rate** (based on your selected ads)  
-- **Google Finance exchange rate** for the chosen currency pair  
-- **Absolute and relative differences** between the two rates  
-- **Potential gain/loss percentage**  
-- **Estimated gain/loss for a fixed amount (e.g. 5000 units)**  
+- **Binance P2P exchange rate** (based on your selected ads)
+- **Google Finance exchange rate** for the chosen currency pair
+- **Absolute and relative differences** between the two rates
+- **Potential gain/loss percentage**
+- **Estimated gain/loss for a fixed amount (e.g. 5000 units)**
 
 Positive results are displayed in **green** (profit), while negative results are shown in **red** (loss).  
 This tool saves valuable time for traders and analysts who frequently perform cross-currency P2P comparisons.
@@ -19,33 +19,33 @@ This tool saves valuable time for traders and analysts who frequently perform cr
 ## ⚙️ How to Use
 
 1. **Open the app** — You’ll see two main sections:
-   - **BUY** – This corresponds to **Binance sell adverts** (you’re buying from them).  
+   - **BUY** – This corresponds to **Binance sell adverts** (you’re buying from them).
    - **SELL** – This corresponds to **Binance buy adverts** (you’re selling to them).
 
 2. **Filter ads** by:
-   - Asset (e.g., USDT, BTC)  
-   - Currency (e.g., GEL, EUR)  
-   - Payment method  
+   - Asset (e.g., USDT, BTC)
+   - Currency (e.g., GEL, EUR)
+   - Payment method
 
 3. **Select one advert** in each section:
-   - In **BUY**, select the advert you’ll use to **buy** the asset.  
-   - In **SELL**, select the advert you’ll use to **sell** the asset.  
+   - In **BUY**, select the advert you’ll use to **buy** the asset.
+   - In **SELL**, select the advert you’ll use to **sell** the asset.
 
 4. The app automatically:
-   - Fetches the **current Google Finance rate** for the selected currency pair.  
-   - Calculates the **Binance P2P rate** based on the chosen adverts.  
-   - Computes the **gain/loss percentage**, **absolute difference**, and **profit/loss estimate** for a fixed amount (e.g., 5000 units).  
+   - Fetches the **current Google Finance rate** for the selected currency pair.
+   - Calculates the **Binance P2P rate** based on the chosen adverts.
+   - Computes the **gain/loss percentage**, **absolute difference**, and **profit/loss estimate** for a fixed amount (e.g., 5000 units).
 
 5. **Review the results table**, which displays:
-   - Binance rate  
-   - Google rate  
-   - Absolute and relative differences  
-   - Gain/loss percentage  
-   - Estimated gain/loss for 5000 units  
+   - Binance rate
+   - Google rate
+   - Absolute and relative differences
+   - Gain/loss percentage
+   - Estimated gain/loss for 5000 units
 
 6. **Interpret the result:**
-   - 🟢 **Green** → Profit opportunity  
-   - 🔴 **Red** → Loss (inefficient conversion path)  
+   - 🟢 **Green** → Profit opportunity
+   - 🔴 **Red** → Loss (inefficient conversion path)
 
 ---
 
@@ -53,33 +53,37 @@ This tool saves valuable time for traders and analysts who frequently perform cr
 
 **Goal:** Buy USDT for **GEL**, sell it for **EUR**, and see if the conversion rate between GEL and EUR is profitable on Binance compared to the official rate.
 
-| Parameter | Value |
-|:--|:--|
-| **Asset** | USDT |
-| **Buy Ad (GEL)** | 1 USDT = 2.71 GEL |
-| **Sell Ad (EUR)** | 1 USDT = 0.89 EUR |
-| **Google Rate (EUR/GEL)** | 0.3206 |
+| Parameter                 | Value             |
+| :------------------------ | :---------------- |
+| **Asset**                 | USDT              |
+| **Buy Ad (GEL)**          | 1 USDT = 2.71 GEL |
+| **Sell Ad (EUR)**         | 1 USDT = 0.89 EUR |
+| **Google Rate (EUR/GEL)** | 0.3206            |
 
 ---
 
 ### Step-by-Step Calculation
 
-**1️⃣ Binance rate (EUR/GEL):**  
+**1️⃣ Binance rate (EUR/GEL):**
+
 ```math
 \text{Binance Rate} = \frac{0.89}{2.71} = 0.3284
 ```
 
-**2️⃣ Absolute difference:**  
+**2️⃣ Absolute difference:**
+
 ```math
 0.3284 - 0.3206 = 0.0078
 ```
 
-**3️⃣ Relative difference (gain):**  
+**3️⃣ Relative difference (gain):**
+
 ```math
 \frac{(0.3284 - 0.3206)}{0.3284} = 0.0237 = 2.37\%
 ```
 
-**4️⃣ Gain/Loss for 5000 GEL:**  
+**4️⃣ Gain/Loss for 5000 GEL:**
+
 ```math
 5000 × 0.0237 = 118.5\text{ GEL}
 ```
@@ -88,14 +92,14 @@ This tool saves valuable time for traders and analysts who frequently perform cr
 
 ### ✅ Results Summary
 
-| Metric | Formula | Result |
-|:--|:--|--:|
-| **Binance Rate (EUR/GEL)** | 0.89 / 2.71 | **0.3284** |
-| **Google Rate (EUR/GEL)** | — | **0.3206** |
-| **Absolute Difference** | 0.3284 − 0.3206 | **0.0078** |
-| **Relative Difference (Gain)** | (0.3284 − 0.3206) / 0.3284 | **2.37 %** |
-| **Gain/Loss (for 5000 GEL)** | 5000 × 0.0237 | **+118.5 GEL** |
-| **Result Color** | — | 🟢 **Profit** |
+| Metric                         | Formula                    |         Result |
+| :----------------------------- | :------------------------- | -------------: |
+| **Binance Rate (EUR/GEL)**     | 0.89 / 2.71                |     **0.3284** |
+| **Google Rate (EUR/GEL)**      | —                          |     **0.3206** |
+| **Absolute Difference**        | 0.3284 − 0.3206            |     **0.0078** |
+| **Relative Difference (Gain)** | (0.3284 − 0.3206) / 0.3284 |     **2.37 %** |
+| **Gain/Loss (for 5000 GEL)**   | 5000 × 0.0237              | **+118.5 GEL** |
+| **Result Color**               | —                          |  🟢 **Profit** |
 
 # Getting Started
 

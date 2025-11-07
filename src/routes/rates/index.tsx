@@ -49,7 +49,9 @@ export const Route = createFileRoute('/rates/')({
       sellFor: (search.sellFor as string) || 'MAD',
       buyPayment: (search.buyPayment as Array<string>) || [],
       sellPayment: (search.sellPayment as Array<string>) || [],
-      tradeAmount: isNaN(tradeAmount as number) ? 5000 : tradeAmount as number,
+      tradeAmount: isNaN(tradeAmount as number)
+        ? 5000
+        : (tradeAmount as number),
     }
   },
 })

@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import cn from 'classnames'
 import { useSearch } from '@tanstack/react-router'
-import { useAdvertsStore } from '@/store/adverts'
 import { TradeAmountSelect } from './TradeAmountSelect'
+import { useAdvertsStore } from '@/store/adverts'
 
 export function ResultsTable() {
   const { selectedSellAdv, selectedBuyAdv } = useAdvertsStore()
@@ -17,8 +17,8 @@ export function ResultsTable() {
       buyFor === sellFor
         ? { rate: 1 }
         : fetch(googleFinUrl, {
-          method: 'GET',
-        }).then((res) => res.json()),
+            method: 'GET',
+          }).then((res) => res.json()),
     initialData: { rate: -1 },
     select: ({ rate }) => ({ rate: rate }),
   })
@@ -74,17 +74,23 @@ export function ResultsTable() {
           <tr>
             <td className="border p-1">
               <pre>
-                {binRate === Infinity || binRate === undefined ? 'N/A' : binRate.toFixed(4)}
+                {binRate === Infinity || binRate === undefined
+                  ? 'N/A'
+                  : binRate.toFixed(4)}
               </pre>
             </td>
             <td className="border p-1">
               <pre>
-                {googleRate.rate === -1 || googleRate?.rate === undefined ? 'N/A' : googleRate.rate.toFixed(4)}
+                {googleRate.rate === -1 || googleRate?.rate === undefined
+                  ? 'N/A'
+                  : googleRate.rate.toFixed(4)}
               </pre>
             </td>
             <td className="border p-1">
               <pre>
-                {absDiff === Infinity || absDiff === undefined ? 'N/A' : absDiff.toFixed(3)}
+                {absDiff === Infinity || absDiff === undefined
+                  ? 'N/A'
+                  : absDiff.toFixed(3)}
               </pre>
             </td>
             <td
@@ -112,10 +118,14 @@ export function ResultsTable() {
                   !isNaN(relDiff) && relDiff !== Infinity && relDiff > 0,
               })}
             >
-              {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? 'N/A' : (
+              {googleRate.rate === -1 || isNaN(gain) || gain === undefined ? (
+                'N/A'
+              ) : (
                 <pre>
-                  <strong>{gain < 0 ? 'Loss' : 'Gain'} from <TradeAmountSelect />
-                    : </strong>
+                  <strong>
+                    {gain < 0 ? 'Loss' : 'Gain'} from <TradeAmountSelect />
+                    :{' '}
+                  </strong>
                   {gain.toFixed(2)}
                 </pre>
               )}

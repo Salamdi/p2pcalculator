@@ -6,6 +6,7 @@ import { Item, ItemContent, ItemGroup, ItemTitle } from '../ui/item'
 import { Spinner } from '../ui/spinner'
 import { Input } from '../ui/input'
 import { Checkbox } from '../ui/checkbox'
+import { Separator } from '../ui/separator'
 import type { ChangeEventHandler } from 'react'
 import {
   Drawer,
@@ -18,7 +19,6 @@ import {
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { useAdvertsStore } from '@/store/adverts'
-import { Separator } from '../ui/separator'
 
 interface IPaymentMethod {
   identifier: string
@@ -41,7 +41,7 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
   const payTypes = useMemo(() => {
     return variant === 'buy' ? buyPayment : sellPayment
   }, [variant, buyPayment, sellPayment])
-  const [localPayTypes, setLocalPayTypes] = useState<string[]>(payTypes)
+  const [localPayTypes, setLocalPayTypes] = useState<Array<string>>(payTypes)
   const resetAdverts = useAdvertsStore((state) => state.reset)
   const { data: paymentMethods, isPending } = useQuery<Array<IPaymentMethod>>({
     queryKey: ['payment-methods', fiat],
@@ -78,20 +78,23 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
 
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-  const handlePaymentSelect = useCallback((paymentMethod: string) => {
-    let newPayTypes: Array<string> = []
-    if (paymentMethod === 'all') {
-      newPayTypes = []
-    } else {
-      const currentPayTypes = localPayTypes || []
-      if (currentPayTypes.includes(paymentMethod)) {
-        newPayTypes = currentPayTypes.filter((p) => p !== paymentMethod)
+  const handlePaymentSelect = useCallback(
+    (paymentMethod: string) => {
+      let newPayTypes: Array<string> = []
+      if (paymentMethod === 'all') {
+        newPayTypes = []
       } else {
-        newPayTypes = [...currentPayTypes, paymentMethod]
+        const currentPayTypes = localPayTypes || []
+        if (currentPayTypes.includes(paymentMethod)) {
+          newPayTypes = currentPayTypes.filter((p) => p !== paymentMethod)
+        } else {
+          newPayTypes = [...currentPayTypes, paymentMethod]
+        }
       }
-    }
-    setLocalPayTypes(newPayTypes)
-  }, [localPayTypes])
+      setLocalPayTypes(newPayTypes)
+    },
+    [localPayTypes],
+  )
 
   const handleSave = useCallback(async () => {
     const field = variant === 'buy' ? 'buyPayment' : 'sellPayment'
@@ -116,7 +119,9 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
     <Drawer onClose={handleDrawerClose}>
       <DrawerTrigger asChild>
         <Button variant="outline">
-          <p className="max-w-12 truncate">{isPending ? <Spinner /> : <>{current}</>}</p>
+          <p className="max-w-12 truncate">
+            {isPending ? <Spinner /> : <>{current}</>}
+          </p>
           <ChevronsUpDown />
         </Button>
       </DrawerTrigger>
@@ -144,7 +149,9 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
               >
                 <Checkbox checked={isChecked('all')} />
                 <ItemContent>
-                  <ItemTitle className="font-bold">All Payments methods</ItemTitle>
+                  <ItemTitle className="font-bold">
+                    All Payments methods
+                  </ItemTitle>
                 </ItemContent>
               </Item>
             </ItemGroup>
@@ -153,34 +160,37 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
             </div>
             {paymentMethods === undefined || isPending ? (
               <Spinner />
-            ) : paymentMethods
-              .filter((p) =>
-                p.tradeMethodName
-                  .toLowerCase()
-                  .includes(query.toLowerCase()),
-              )
-              .map((p) => (
-                <Item
-                  key={p.identifier}
-                  size="sm"
-                  onClick={() => handlePaymentSelect(p.identifier)}
-                >
-                  <Checkbox checked={isChecked(p.identifier)} />
-                  <ItemContent>
-                    <ItemTitle className="font-bold">
-                      {p.tradeMethodName}
-                    </ItemTitle>
-                  </ItemContent>
-                </Item>
-              ))
-            }
+            ) : (
+              paymentMethods
+                .filter((p) =>
+                  p.tradeMethodName.toLowerCase().includes(query.toLowerCase()),
+                )
+                .map((p) => (
+                  <Item
+                    key={p.identifier}
+                    size="sm"
+                    onClick={() => handlePaymentSelect(p.identifier)}
+                  >
+                    <Checkbox checked={isChecked(p.identifier)} />
+                    <ItemContent>
+                      <ItemTitle className="font-bold">
+                        {p.tradeMethodName}
+                      </ItemTitle>
+                    </ItemContent>
+                  </Item>
+                ))
+            )}
           </div>
         </ItemGroup>
         <DrawerFooter className="flex-row gap-2">
           <DrawerClose asChild>
-            <Button variant="outline" ref={closeButtonRef}>Cancel</Button>
+            <Button variant="outline" ref={closeButtonRef}>
+              Cancel
+            </Button>
           </DrawerClose>
-          <Button onClick={handleSave} className="flex-1">Apply</Button>
+          <Button onClick={handleSave} className="flex-1">
+            Apply
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
