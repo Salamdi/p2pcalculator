@@ -65,24 +65,24 @@ This tool saves valuable time for traders and analysts who frequently perform cr
 ### Step-by-Step Calculation
 
 **1️⃣ Binance rate (EUR/GEL):**  
-$$
+```math
 \text{Binance Rate} = \frac{0.89}{2.71} = 0.3284
-$$
+```
 
 **2️⃣ Absolute difference:**  
-$$
+```math
 0.3284 - 0.3206 = 0.0078
-$$
+```
 
 **3️⃣ Relative difference (gain):**  
-$$
+```math
 \frac{(0.3284 - 0.3206)}{0.3284} = 0.0237 = 2.37\%
-$$
+```
 
 **4️⃣ Gain/Loss for 5000 GEL:**  
-$$
+```math
 5000 × 0.0237 = 118.5\text{ GEL}
-$$
+```
 
 ---
 
