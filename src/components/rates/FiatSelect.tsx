@@ -86,7 +86,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
         advState.setSelectedBuyAdv(undefined)
       }
     },
-    [variant, navigate],
+    [variant, navigate, advState],
   )
 
   const handleDrawerClose = useCallback(() => {
