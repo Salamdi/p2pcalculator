@@ -18,13 +18,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-
-interface IPaymentMethod {
-  identifier: string
-  tradeMethodName: string
-  tradeMethodShortName: string
-  tradeMethodBgColor: string
-}
+import { TradeMethod } from './types'
 
 type PaymentSelectProps = {
   fiat: string
@@ -42,7 +36,7 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
     return variant === 'buy' ? buyPayment : sellPayment
   }, [variant, buyPayment, sellPayment])
   const [localPayTypes, setLocalPayTypes] = useState<string[]>(payTypes)
-  const { data: paymentMethods, isPending } = useQuery<IPaymentMethod[]>({
+  const { data: paymentMethods, isPending } = useQuery<TradeMethod[]>({
     queryKey: ['payment-methods', fiat],
     queryFn: async () => {
       const res = await fetch('/bapi/c2c/v2/public/c2c/adv/filter-conditions', {

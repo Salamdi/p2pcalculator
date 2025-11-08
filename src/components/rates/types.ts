@@ -1,3 +1,10 @@
+export type TradeMethod = {
+  identifier: string
+  tradeMethodName: string
+  tradeMethodShortName: string
+  tradeMethodBgColor: string
+}
+
 export type Adv = {
   adv: {
     payTimeLimit: number
@@ -10,6 +17,7 @@ export type Adv = {
     maxSingleTransAmount: number
     commissionRate: number
     tradeType: string
+    tradeMethods: TradeMethod[];
     advNo: string
   }
   advertiser: {
