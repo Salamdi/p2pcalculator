@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { ChevronsUpDown } from 'lucide-react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Item, ItemContent, ItemGroup, ItemTitle } from '../ui/item'
 import { Spinner } from '../ui/spinner'
@@ -36,14 +36,15 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
   const { buyPayment, sellPayment } = useSearch({
     from: '/rates/',
   })
+  const searchParamName = useMemo(() => variant === 'buy' ? 'buyPayment' : 'sellPayment', [variant])
   const navigate = useNavigate({ from: '/rates' })
   const [query, setQuery] = useState('')
   const payTypes = useMemo(() => {
     return variant === 'buy' ? buyPayment : sellPayment
   }, [variant, buyPayment, sellPayment])
-  const [localPayTypes, setLocalPayTypes] = useState<Array<string>>(payTypes)
+  const [localPayTypes, setLocalPayTypes] = useState<string[]>(payTypes)
   const resetAdverts = useAdvertsStore((state) => state.reset)
-  const { data: paymentMethods, isPending } = useQuery<Array<IPaymentMethod>>({
+  const { data: paymentMethods, isPending } = useQuery<IPaymentMethod[]>({
     queryKey: ['payment-methods', fiat],
     queryFn: async () => {
       const res = await fetch('/bapi/c2c/v2/public/c2c/adv/filter-conditions', {
@@ -76,11 +77,22 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
     return payTypes.join(', ')
   }, [payTypes])
 
+  useEffect(() => {
+    const isSubset = payTypes.every(
+      (pt) => paymentMethods?.findIndex((pm) => pt === pm.identifier) !== -1
+    )
+    if (isSubset) {
+      return;
+    }
+    navigate({ search: (prev) => ({ ...prev, [searchParamName]: [] }) })
+    setLocalPayTypes([])
+  }, [payTypes, paymentMethods, navigate, searchParamName, setLocalPayTypes])
+
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const handlePaymentSelect = useCallback(
     (paymentMethod: string) => {
-      let newPayTypes: Array<string> = []
+      let newPayTypes: string[] = []
       if (paymentMethod === 'all') {
         newPayTypes = []
       } else {
@@ -97,8 +109,7 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
   )
 
   const handleSave = useCallback(async () => {
-    const field = variant === 'buy' ? 'buyPayment' : 'sellPayment'
-    await navigate({ search: (prev) => ({ ...prev, [field]: localPayTypes }) })
+    await navigate({ search: (prev) => ({ ...prev, [searchParamName]: localPayTypes }) })
     resetAdverts()
     closeButtonRef.current?.click()
   }, [variant, navigate, localPayTypes, resetAdverts])
