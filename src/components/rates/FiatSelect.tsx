@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Spinner } from '../ui/spinner'
 import { Input } from '../ui/input'
 import type { ChangeEventHandler, MouseEventHandler } from 'react'
-import { useAdvertsStore } from '@/store/adverts'
 import {
   Drawer,
   DrawerClose,
@@ -36,7 +35,6 @@ export function FiatSelect({ variant }: FiatSelectProps) {
   })
   const navigate = useNavigate({ from: '/rates' })
   const [query, setQuery] = useState('')
-  const advState = useAdvertsStore()
   const { data: fiats, isPending } = useQuery<Array<ICurrency>>({
     queryKey: ['fiat-list'],
     queryFn: async () => {
@@ -80,13 +78,8 @@ export function FiatSelect({ variant }: FiatSelectProps) {
       const currency = event.currentTarget.dataset['code']
       const field = variant === 'buy' ? 'buyFor' : 'sellFor'
       await navigate({ search: (prev) => ({ ...prev, [field]: currency }) })
-      if (variant === 'buy') {
-        advState.setSelectedSellAdv(undefined)
-      } else {
-        advState.setSelectedBuyAdv(undefined)
-      }
     },
-    [variant, navigate, advState],
+    [variant, navigate],
   )
 
   const handleDrawerClose = useCallback(() => {

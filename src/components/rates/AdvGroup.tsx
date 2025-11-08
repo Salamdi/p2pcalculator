@@ -6,6 +6,7 @@ import { FiatSelect } from './FiatSelect'
 import { Button } from '@/components/ui/button'
 import { useP2PQuery } from '@/hooks/useP2PQuery'
 import { useAdvertsStore } from '@/store/adverts'
+import { useEffect } from 'react'
 
 const variants = {
   buy: {
@@ -54,6 +55,17 @@ export function AdvGroup({ title, variant, tradeType }: AdvGroupProps) {
     const adv = data?.find((a) => a.adv.advNo === advNo)
     onAdvSelect(adv)
   }
+
+  useEffect(() => {
+    const isSelectedListed = data
+      ?.findIndex(
+        ({ adv }) => adv.advNo === selectedAdvInStore?.adv.advNo
+      ) !== -1
+    if (isSelectedListed) {
+      return
+    }
+    onAdvSelect(undefined)
+  }, [data])
 
   return (
     <ul

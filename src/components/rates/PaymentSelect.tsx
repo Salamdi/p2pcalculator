@@ -18,7 +18,6 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
-import { useAdvertsStore } from '@/store/adverts'
 
 interface IPaymentMethod {
   identifier: string
@@ -43,7 +42,6 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
     return variant === 'buy' ? buyPayment : sellPayment
   }, [variant, buyPayment, sellPayment])
   const [localPayTypes, setLocalPayTypes] = useState<string[]>(payTypes)
-  const resetAdverts = useAdvertsStore((state) => state.reset)
   const { data: paymentMethods, isPending } = useQuery<IPaymentMethod[]>({
     queryKey: ['payment-methods', fiat],
     queryFn: async () => {
@@ -110,9 +108,8 @@ export function PaymentSelect({ fiat, variant }: PaymentSelectProps) {
 
   const handleSave = useCallback(async () => {
     await navigate({ search: (prev) => ({ ...prev, [searchParamName]: localPayTypes }) })
-    resetAdverts()
     closeButtonRef.current?.click()
-  }, [variant, navigate, localPayTypes, resetAdverts])
+  }, [variant, navigate, localPayTypes])
 
   const handleDrawerClose = useCallback(() => {
     setQuery('')
