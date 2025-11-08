@@ -36,7 +36,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
   })
   const navigate = useNavigate({ from: '/rates' })
   const [query, setQuery] = useState('')
-  const resetAdverts = useAdvertsStore((state) => state.reset)
+  const advState = useAdvertsStore()
   const { data: fiats, isPending } = useQuery<Array<ICurrency>>({
     queryKey: ['fiat-list'],
     queryFn: async () => {
@@ -77,10 +77,14 @@ export function FiatSelect({ variant }: FiatSelectProps) {
   const handleFiatSelect: MouseEventHandler<HTMLDivElement> = useCallback(
     async (event) => {
       closeButtonRef.current?.click()
-      const currency = event.currentTarget.dataset['code'];
+      const currency = event.currentTarget.dataset['code']
       const field = variant === 'buy' ? 'buyFor' : 'sellFor'
       await navigate({ search: (prev) => ({ ...prev, [field]: currency }) })
-      resetAdverts()
+      if (variant === 'buy') {
+        advState.setSelectedSellAdv(undefined)
+      } else {
+        advState.setSelectedBuyAdv(undefined)
+      }
     },
     [variant, navigate],
   )
