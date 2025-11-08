@@ -77,7 +77,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
   const handleFiatSelect: MouseEventHandler<HTMLDivElement> = useCallback(
     async (event) => {
       closeButtonRef.current?.click()
-      const currency = (event.target as HTMLDivElement).textContent
+      const currency = event.currentTarget.dataset['code'];
       const field = variant === 'buy' ? 'buyFor' : 'sellFor'
       await navigate({ search: (prev) => ({ ...prev, [field]: currency }) })
       resetAdverts()
@@ -134,6 +134,7 @@ export function FiatSelect({ variant }: FiatSelectProps) {
                     key={f.currencyCode}
                     size="sm"
                     onClick={handleFiatSelect}
+                    data-code={f.currencyCode}
                   >
                     <ItemMedia>
                       <Avatar>
