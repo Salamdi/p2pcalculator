@@ -4,6 +4,7 @@ import {
   createRootRouteWithContext,
   redirect,
 } from '@tanstack/react-router'
+import { Analytics } from '@vercel/analytics/react'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
@@ -97,6 +98,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           />
         )}
         <Scripts />
+        <Analytics />
       </body>
     </html>
   )
