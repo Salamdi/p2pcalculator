@@ -2,18 +2,33 @@ import { render, screen } from '@testing-library/react'
 import { useQuery } from '@tanstack/react-query'
 import { ResultsTable } from './ResultsTable'
 import type { Mock } from 'vitest'
-
+const buyFor = 'KZT'
+const sellFor = 'MAD'
+const tradeAmount = 5000
 const gooRate = 0.0175123 // mad to kzt
 const binSellPrice = 550 // kzt
 const binBuyPrice = 9.45 // mad
 const binRate = binBuyPrice / binSellPrice // mad to kzt
 const absDiff = binRate - gooRate // mad to kzt
 const relDiff = absDiff / binRate
-const totalDiff = 5000 * relDiff
+const totalDiff = tradeAmount * relDiff
 
-vi.mock('@tanstack/react-query', () => ({
-  useQuery: vi.fn(() => ({ data: { rate: gooRate } })),
-}))
+vi.mock('@tanstack/react-query', () => {
+  return {
+    useQuery: vi.fn(() => ({ data: { rate: gooRate } })),
+  }
+})
+
+vi.mock('@tanstack/react-router', () => {
+  return {
+    useNavigate: vi.fn(() => vi.fn()),
+    useSearch: vi.fn(() => ({
+      buyFor,
+      sellFor,
+      tradeAmount,
+    })),
+  }
+})
 
 vi.mock('@/store/adverts', () => ({
   useAdvertsStore: vi.fn(() => ({
@@ -87,7 +102,7 @@ describe('ResultsTable', () => {
     const relDiff = absDiff / binRate
     const totalDiff = 5000 * relDiff
     beforeEach(() => {
-      ;(useQuery as Mock).mockImplementation(() => ({
+      (useQuery as Mock).mockImplementation(() => ({
         data: { rate: gooRate },
       }))
     })
