@@ -58,10 +58,12 @@ export function TradeAmountSelect() {
             <div className="flex flex-col gap-4 pb-4">
               <Input
                 type="number"
+                inputMode="numeric"
                 placeholder="Trade amount"
                 value={localTradeAmount}
                 enterKeyHint="enter"
                 onChange={(e) => setLocalTradeAmount(e.target.value)}
+                onFocus={(e) => e.target.select()}
                 min={0}
               />
               <div className="flex gap-4">
