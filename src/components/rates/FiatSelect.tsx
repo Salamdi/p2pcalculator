@@ -42,7 +42,6 @@ export function FiatSelect({ variant }: FiatSelectProps) {
         '/bapi/c2c/v1/friendly/c2c/trade-rule/fiat-list',
         {
           method: 'POST',
-          body: '{}',
         },
       )
       const json: any = await res.json()
